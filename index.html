@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OTP Focus: Мобильный прототип v3</title>
+    <title>OTP Focus: Мобильный прототип v4</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script>
@@ -76,26 +76,27 @@
         .mockup-scroll::-webkit-scrollbar { display: none; }
         .mockup-scroll { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* Slide animation for sub-screens */
         .slide-in { transform: translateX(0%); }
         .slide-out { transform: translateX(100%); }
         .slide-transition { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+
+        /* Bottom Sheet Styles */
+        .sheet-hidden { transform: translateY(100%); }
+        .sheet-visible { transform: translateY(0); }
+        .backdrop-hidden { opacity: 0; pointer-events: none; }
+        .backdrop-visible { opacity: 1; pointer-events: auto; }
     </style>
 </head>
 <body class="antialiased">
 
 <!-- Application Structure Plan: 
-     - Added slide-in sub-screens inside the Showcase tab.
-     - Extracted actual product names, conditions, and hierarchy from the user's screenshots (e.g., "Возьмите наличные", "Рефинансирование", "Платежный стикер").
-     - Placed the "2500 Р за друга" banner and "Польза+" in the main Showcase view to reflect the screenshot's promotional structure.
--->
-<!-- Visualization & Content Choices: 
-     - Deep screens for Cards, Credits, and Savings use a clean list layout, typical for FinTech product catalogs.
-     - Emojis and background shapes are used as visual anchors (replacing raster images/SVG).
+     - Added a universal Bottom Sheet (шторка) for the Quick Actions on the Main screen.
+     - The Bottom Sheet has a dark overlay (backdrop) that fades in, and the sheet itself slides up.
+     - Content inside the sheet swaps dynamically based on which button was clicked (Transfer, Pay, QR, History).
 -->
 
 <div class="scale-wrapper">
-    <div class="phone-mockup flex flex-col bg-slate-50">
+    <div class="phone-mockup flex flex-col bg-slate-50 relative">
         <div class="notch"></div>
         
         <!-- Status Bar -->
@@ -184,22 +185,22 @@
                     </div>
                 </div>
 
-                <!-- Quick Actions -->
+                <!-- QUICK ACTIONS (UPDATED TO OPEN BOTTOM SHEET) -->
                 <div class="px-5 mb-6 flex gap-3 overflow-x-auto mockup-scroll">
-                    <div class="flex flex-col items-center gap-1.5 shrink-0 cursor-pointer">
-                        <div class="w-14 h-14 bg-otpLightBlue rounded-2xl flex items-center justify-center text-2xl text-otpLavender shadow-sm">💸</div>
+                    <div class="flex flex-col items-center gap-1.5 shrink-0 cursor-pointer" onclick="openBottomSheet('transfer')">
+                        <div class="w-14 h-14 bg-otpLightBlue rounded-2xl flex items-center justify-center text-2xl text-otpLavender shadow-sm active:scale-95 transition-transform">💸</div>
                         <span class="text-[11px] font-semibold text-slate-700">Перевести</span>
                     </div>
-                    <div class="flex flex-col items-center gap-1.5 shrink-0 cursor-pointer">
-                        <div class="w-14 h-14 bg-otpLightBlue rounded-2xl flex items-center justify-center text-2xl text-otpLavender shadow-sm">📱</div>
+                    <div class="flex flex-col items-center gap-1.5 shrink-0 cursor-pointer" onclick="openBottomSheet('pay')">
+                        <div class="w-14 h-14 bg-otpLightBlue rounded-2xl flex items-center justify-center text-2xl text-otpLavender shadow-sm active:scale-95 transition-transform">📱</div>
                         <span class="text-[11px] font-semibold text-slate-700">Оплатить</span>
                     </div>
-                    <div class="flex flex-col items-center gap-1.5 shrink-0 cursor-pointer">
-                        <div class="w-14 h-14 bg-otpLightBlue rounded-2xl flex items-center justify-center text-xl font-bold text-otpLavender shadow-sm">QR</div>
+                    <div class="flex flex-col items-center gap-1.5 shrink-0 cursor-pointer" onclick="openBottomSheet('qr')">
+                        <div class="w-14 h-14 bg-otpLightBlue rounded-2xl flex items-center justify-center text-xl font-bold text-otpLavender shadow-sm active:scale-95 transition-transform">QR</div>
                         <span class="text-[11px] font-semibold text-slate-700">СБП</span>
                     </div>
-                    <div class="flex flex-col items-center gap-1.5 shrink-0 cursor-pointer">
-                        <div class="w-14 h-14 bg-otpLightBlue rounded-2xl flex items-center justify-center text-2xl text-otpLavender shadow-sm">🧾</div>
+                    <div class="flex flex-col items-center gap-1.5 shrink-0 cursor-pointer" onclick="openBottomSheet('history')">
+                        <div class="w-14 h-14 bg-otpLightBlue rounded-2xl flex items-center justify-center text-2xl text-otpLavender shadow-sm active:scale-95 transition-transform">🧾</div>
                         <span class="text-[11px] font-semibold text-slate-700">История</span>
                     </div>
                 </div>
@@ -283,7 +284,7 @@
                         </div>
                     </div>
                     
-                    <!-- Реферальный баннер (из скриншотов) -->
+                    <!-- Реферальный баннер -->
                     <div class="mt-5 bg-gradient-to-r from-otpLavender to-[#B388D4] rounded-2xl p-5 relative overflow-hidden text-white shadow-sm cursor-pointer hover:opacity-95 transition">
                         <div class="relative z-10 w-2/3">
                             <div class="text-[10px] font-bold uppercase tracking-wider mb-1 opacity-90">Приглашайте и зарабатывайте!</div>
@@ -296,7 +297,7 @@
                     <div class="mt-5 mb-4">
                         <h4 class="font-bold text-lg text-slate-800 mb-3">Наши предложения</h4>
                         <div class="space-y-3">
-                            <!-- Польза+ (из скриншотов) -->
+                            <!-- Польза+ -->
                             <div class="bg-slate-800 p-4 rounded-2xl flex justify-between items-center cursor-pointer shadow-sm">
                                 <div>
                                     <div class="font-bold text-white text-sm mb-1">Польза+ 🔥</div>
@@ -411,6 +412,142 @@
 
         </div>
 
+        <!-- ========================================== -->
+        <!-- BOTTOM SHEET (ВСПЛЫВАЮЩАЯ ШТОРКА)          -->
+        <!-- ========================================== -->
+        <!-- Dark Overlay -->
+        <div id="sheet-backdrop" class="absolute inset-0 bg-slate-900/60 z-[60] backdrop-hidden transition-opacity duration-300" onclick="closeBottomSheet()"></div>
+        
+        <!-- Sheet Container -->
+        <div id="bottom-sheet" class="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl z-[70] sheet-hidden transition-transform duration-300 flex flex-col max-h-[85%] shadow-2xl">
+            <!-- Pull Handle -->
+            <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mt-4 mb-3"></div>
+            
+            <!-- Dynamic Content Area -->
+            <div class="px-5 pb-8 overflow-y-auto mockup-scroll" id="sheet-dynamic-content">
+                
+                <!-- CONTENT 1: ПЕРЕВОДЫ -->
+                <div id="bs-transfer" class="hidden">
+                    <h3 class="font-bold text-xl text-slate-800 mb-4">Переводы</h3>
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-4 p-3 hover:bg-slate-50 rounded-xl cursor-pointer transition">
+                            <div class="w-10 h-10 rounded-full bg-otpLightBlue flex items-center justify-center text-otpLavender text-lg">📱</div>
+                            <div class="flex-1 border-b border-slate-100 pb-3">
+                                <div class="font-bold text-sm text-slate-800">По номеру телефона (СБП)</div>
+                                <div class="text-[11px] text-slate-500">В любой банк без комиссии</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4 p-3 hover:bg-slate-50 rounded-xl cursor-pointer transition">
+                            <div class="w-10 h-10 rounded-full bg-otpLightBlue flex items-center justify-center text-otpLavender text-lg">💳</div>
+                            <div class="flex-1 border-b border-slate-100 pb-3">
+                                <div class="font-bold text-sm text-slate-800">По номеру карты</div>
+                                <div class="text-[11px] text-slate-500">На карту РФ или за рубеж</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4 p-3 hover:bg-slate-50 rounded-xl cursor-pointer transition">
+                            <div class="w-10 h-10 rounded-full bg-otpLightBlue flex items-center justify-center text-otpLavender text-lg">👤</div>
+                            <div class="flex-1 border-b border-slate-100 pb-3">
+                                <div class="font-bold text-sm text-slate-800">Между своими счетами</div>
+                                <div class="text-[11px] text-slate-500">Например, на накопительный</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4 p-3 hover:bg-slate-50 rounded-xl cursor-pointer transition">
+                            <div class="w-10 h-10 rounded-full bg-otpLightBlue flex items-center justify-center text-otpLavender text-lg">🏦</div>
+                            <div class="flex-1 pb-1">
+                                <div class="font-bold text-sm text-slate-800">По реквизитам</div>
+                                <div class="text-[11px] text-slate-500">Организации или ИП</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CONTENT 2: ОПЛАТИТЬ -->
+                <div id="bs-pay" class="hidden">
+                    <h3 class="font-bold text-xl text-slate-800 mb-4">Оплатить услуги</h3>
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-4 p-3 hover:bg-slate-50 rounded-xl cursor-pointer transition">
+                            <div class="w-10 h-10 rounded-full bg-otpLightBlue flex items-center justify-center text-otpLavender text-lg">📞</div>
+                            <div class="flex-1 border-b border-slate-100 pb-3">
+                                <div class="font-bold text-sm text-slate-800">Мобильная связь</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4 p-3 hover:bg-slate-50 rounded-xl cursor-pointer transition">
+                            <div class="w-10 h-10 rounded-full bg-otpOrange/10 flex items-center justify-center text-otpOrange text-lg relative">
+                                🏠
+                                <div class="absolute -top-1 -right-1 w-3 h-3 bg-otpGreen rounded-full border-2 border-white"></div>
+                            </div>
+                            <div class="flex-1 border-b border-slate-100 pb-3">
+                                <div class="font-bold text-sm text-slate-800">ЖКХ</div>
+                                <div class="text-[11px] font-medium text-otpOrange">Без комиссии</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4 p-3 hover:bg-slate-50 rounded-xl cursor-pointer transition">
+                            <div class="w-10 h-10 rounded-full bg-otpLightBlue flex items-center justify-center text-otpLavender text-lg">🌐</div>
+                            <div class="flex-1 border-b border-slate-100 pb-3">
+                                <div class="font-bold text-sm text-slate-800">Интернет и ТВ</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4 p-3 hover:bg-slate-50 rounded-xl cursor-pointer transition">
+                            <div class="w-10 h-10 rounded-full bg-otpLightBlue flex items-center justify-center text-otpLavender text-lg">🚗</div>
+                            <div class="flex-1 pb-1">
+                                <div class="font-bold text-sm text-slate-800">Штрафы и налоги</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CONTENT 3: СБП (QR) -->
+                <div id="bs-qr" class="hidden text-center">
+                    <h3 class="font-bold text-xl text-slate-800 mb-2">Оплата по QR</h3>
+                    <p class="text-xs text-slate-500 mb-6">Наведите камеру на QR-код для быстрой оплаты через СБП</p>
+                    <div class="w-48 h-48 mx-auto bg-slate-100 rounded-2xl border-2 border-dashed border-otpLavender flex items-center justify-center mb-6 relative">
+                        <div class="absolute inset-4 border-2 border-otpLightBlue opacity-50"></div>
+                        <div class="text-4xl animate-pulse">📷</div>
+                    </div>
+                    <button class="w-full py-3 bg-slate-100 hover:bg-slate-200 rounded-xl text-sm font-bold text-slate-800 transition">Показать мой QR-код</button>
+                </div>
+
+                <!-- CONTENT 4: ИСТОРИЯ -->
+                <div id="bs-history" class="hidden">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-xl text-slate-800">История операций</h3>
+                        <span class="text-otpOrange text-xs font-bold cursor-pointer">Поиск</span>
+                    </div>
+                    <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Сегодня</div>
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-lg">🛒</div>
+                            <div class="flex-1">
+                                <div class="font-bold text-sm text-slate-800">Пятерочка</div>
+                                <div class="text-[10px] text-slate-500">Супермаркеты</div>
+                            </div>
+                            <div class="font-bold text-sm text-slate-800">- 845 ₽</div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-otpLightBlue text-otpLavender flex items-center justify-center text-lg font-bold">И</div>
+                            <div class="flex-1">
+                                <div class="font-bold text-sm text-slate-800">Ивану С.</div>
+                                <div class="text-[10px] text-slate-500">Перевод по СБП</div>
+                            </div>
+                            <div class="font-bold text-sm text-slate-800">- 1 500 ₽</div>
+                        </div>
+                    </div>
+                    <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 mt-4">Вчера</div>
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-lg">💼</div>
+                            <div class="flex-1">
+                                <div class="font-bold text-sm text-slate-800">Пополнение</div>
+                                <div class="text-[10px] text-slate-500">Зарплата</div>
+                            </div>
+                            <div class="font-bold text-sm text-green-600">+ 85 000 ₽</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
         <!-- Bottom Navigation Bar -->
         <div class="absolute bottom-0 w-full h-[88px] bg-white border-t border-slate-100 flex justify-center items-start pt-3 pb-8 z-50">
             <!-- Главная -->
@@ -438,8 +575,7 @@
         const navMain = document.getElementById('nav-main');
         const navShowcase = document.getElementById('nav-showcase');
 
-        // Закрываем все открытые под-экраны при переключении табов
-        closeAllSubCategories();
+        closeBottomSheet(); // Закрываем шторку при смене табов
 
         if (tabName === 'main') {
             screenMain.classList.remove('opacity-0', 'pointer-events-none');
@@ -470,7 +606,7 @@
         card.classList.toggle('rotate-y-180');
     }
 
-    // --- 3. Логика Под-экранов (Глубокие экраны Витрины) ---
+    // --- 3. Под-экраны Витрины (из V3) ---
     function openSubCategory(catId) {
         const subScreen = document.getElementById('sub-' + catId);
         if (subScreen) {
@@ -478,7 +614,6 @@
             subScreen.classList.add('slide-in');
         }
     }
-
     function closeSubCategory(catId) {
         const subScreen = document.getElementById('sub-' + catId);
         if (subScreen) {
@@ -487,15 +622,38 @@
         }
     }
 
-    function closeAllSubCategories() {
-        const subs = ['cards', 'credits', 'savings'];
-        subs.forEach(catId => {
-            const el = document.getElementById('sub-' + catId);
-            if (el) {
-                el.classList.remove('slide-in');
-                el.classList.add('slide-out');
-            }
+    // --- 4. Логика Bottom Sheet (Всплывающая шторка) ---
+    function openBottomSheet(type) {
+        const sheet = document.getElementById('bottom-sheet');
+        const backdrop = document.getElementById('sheet-backdrop');
+        
+        // Скрываем все варианты контента внутри шторки
+        const contents = ['transfer', 'pay', 'qr', 'history'];
+        contents.forEach(id => {
+            document.getElementById('bs-' + id).classList.add('hidden');
         });
+
+        // Показываем нужный контент
+        document.getElementById('bs-' + type).classList.remove('hidden');
+
+        // Показываем оверлей и поднимаем шторку
+        backdrop.classList.remove('backdrop-hidden');
+        backdrop.classList.add('backdrop-visible');
+        
+        sheet.classList.remove('sheet-hidden');
+        sheet.classList.add('sheet-visible');
+    }
+
+    function closeBottomSheet() {
+        const sheet = document.getElementById('bottom-sheet');
+        const backdrop = document.getElementById('sheet-backdrop');
+        
+        // Опускаем шторку и прячем оверлей
+        sheet.classList.remove('sheet-visible');
+        sheet.classList.add('sheet-hidden');
+        
+        backdrop.classList.remove('backdrop-visible');
+        backdrop.classList.add('backdrop-hidden');
     }
 </script>
 </body>
