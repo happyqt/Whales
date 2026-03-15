@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OTP Focus: Мобильный прототип</title>
+    <title>OTP Focus: Мобильный прототип v3</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
@@ -32,10 +32,9 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            overflow: hidden; /* Предотвращаем скролл всей страницы */
+            overflow: hidden; 
         }
         
-        /* Масштабирование для удобного просмотра на одном экране */
         .scale-wrapper {
             transform: scale(0.85);
             transform-origin: center center;
@@ -45,14 +44,12 @@
         @media (max-height: 800px) { .scale-wrapper { transform: scale(0.8); } }
         @media (max-height: 700px) { .scale-wrapper { transform: scale(0.7); } }
         
-        /* 3D Flip Card Styles */
         .perspective-1000 { perspective: 1000px; }
         .transform-style-3d { transform-style: preserve-3d; }
         .backface-hidden { backface-visibility: hidden; }
         .rotate-y-180 { transform: rotateY(180deg); }
         .flip-transition { transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1); }
         
-        /* Mobile Device Mockup */
         .phone-mockup {
             width: 375px;
             height: 812px;
@@ -76,21 +73,26 @@
             z-index: 50;
         }
 
-        /* Hide scrollbar */
         .mockup-scroll::-webkit-scrollbar { display: none; }
         .mockup-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Slide animation for sub-screens */
+        .slide-in { transform: translateX(0%); }
+        .slide-out { transform: translateX(100%); }
+        .slide-transition { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
     </style>
 </head>
 <body class="antialiased">
 
 <!-- Application Structure Plan: 
-     - Wrapper added to scale down the phone mockup to fit various desktop screens.
-     - Only 2 bottom tabs (Main, Showcase).
-     - Search and Chat are now explicitly placed in the Main screen header.
-     - Card Flip logic updated: Back shows Card Details, Account Details moved to a secondary deep button. -->
+     - Added slide-in sub-screens inside the Showcase tab.
+     - Extracted actual product names, conditions, and hierarchy from the user's screenshots (e.g., "Возьмите наличные", "Рефинансирование", "Платежный стикер").
+     - Placed the "2500 Р за друга" banner and "Польза+" in the main Showcase view to reflect the screenshot's promotional structure.
+-->
 <!-- Visualization & Content Choices: 
-     - The color palette strictly follows the requested Hex codes.
-     - Account details are hidden inside the flipped card to keep the primary view clean but accessible. -->
+     - Deep screens for Cards, Credits, and Savings use a clean list layout, typical for FinTech product catalogs.
+     - Emojis and background shapes are used as visual anchors (replacing raster images/SVG).
+-->
 
 <div class="scale-wrapper">
     <div class="phone-mockup flex flex-col bg-slate-50">
@@ -100,8 +102,10 @@
         <div class="h-12 w-full flex justify-between items-end px-6 pb-2 text-[12px] font-semibold text-slate-800 z-40 bg-transparent">
             <span>09:41</span>
             <span class="flex gap-1.5 items-center">
-                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21L15.6 16.2C14.6 15.4 13.4 15 12 15C10.6 15 9.4 15.4 8.4 16.2L12 21ZM12 3C7.95 3 4.21 4.34 1.2 6.6L3 9C5.5 7.12 8.62 6 12 6C15.38 6 18.5 7.12 21 9L22.8 6.6C19.79 4.34 16.05 3 12 3Z"/></svg>
-                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2H10V4H8.33C7.6 4 7 4.6 7 5.33V20.67C7 21.4 7.6 22 8.33 22H15.67C16.4 22 17 21.4 17 20.67V5.33C17 4.6 16.4 4 15.67 4Z"/></svg>
+                <span class="font-bold">LTE</span>
+                <div class="w-5 h-2.5 border border-slate-800 rounded-[3px] relative">
+                    <div class="absolute inset-[1px] bg-slate-800 rounded-[1px] w-3/4"></div>
+                </div>
             </span>
         </div>
 
@@ -112,8 +116,7 @@
             <!-- SCREEN 1: ГЛАВНАЯ (MAIN)                   -->
             <!-- ========================================== -->
             <div id="screen-main" class="absolute inset-0 mockup-scroll overflow-y-auto pb-24 transition-opacity duration-300 opacity-100 z-10">
-                
-                <!-- Top Header (Profile + Search + Chat) -->
+                <!-- Top Header -->
                 <div class="px-5 pt-3 flex justify-between items-center mb-5">
                     <div class="flex items-center gap-3">
                         <div class="w-11 h-11 rounded-full bg-otpLightBlue flex items-center justify-center font-bold text-otpLavender text-lg border-2 border-white shadow-sm">А</div>
@@ -124,12 +127,8 @@
                     </div>
                     <!-- Блок с Поиском и Чатом -->
                     <div class="flex gap-2">
-                        <button class="w-10 h-10 bg-white rounded-full shadow-sm border border-slate-100 flex items-center justify-center text-lg text-otpDarkBlue hover:text-otpOrange transition" onclick="alert('Открытие умного поиска')">
-                            🔍
-                        </button>
-                        <button class="w-10 h-10 bg-white rounded-full shadow-sm border border-slate-100 flex items-center justify-center text-lg text-otpOrange hover:bg-slate-50 transition" onclick="alert('Открытие чата поддержки')">
-                            💬
-                        </button>
+                        <button class="w-10 h-10 bg-white rounded-full shadow-sm border border-slate-100 flex items-center justify-center text-lg text-otpDarkBlue hover:text-otpOrange transition" onclick="alert('Открытие умного поиска')">🔍</button>
+                        <button class="w-10 h-10 bg-white rounded-full shadow-sm border border-slate-100 flex items-center justify-center text-lg text-otpOrange hover:bg-slate-50 transition" onclick="alert('Открытие чата поддержки')">💬</button>
                     </div>
                 </div>
 
@@ -139,7 +138,6 @@
                         <div class="text-sm text-otpDarkBlue font-medium mb-1">Всего средств</div>
                         <div class="text-3xl font-bold text-slate-800 tracking-tight">142 500 ₽</div>
                     </div>
-                    <!-- Кэшбэк на главной (зеленый акцент) -->
                     <div class="bg-otpGreen rounded-xl p-2.5 shadow-sm text-center min-w-[90px] cursor-pointer hover:opacity-90 transition" onclick="alert('Детали кэшбэка')">
                         <div class="text-[10px] font-bold text-slate-800 uppercase tracking-wider mb-0.5">Кэшбэк</div>
                         <div class="text-sm font-bold text-slate-900">1 250 ₽</div>
@@ -149,15 +147,10 @@
                 <!-- FLIPPABLE CARD WIDGET -->
                 <div class="px-5 mb-6 perspective-1000">
                     <div id="bank-card" class="relative w-full h-48 rounded-2xl cursor-pointer transform-style-3d flip-transition shadow-lg" onclick="toggleCardFlip()">
-                        
-                        <!-- Front of card (Лавандовый градиент) -->
                         <div class="absolute inset-0 w-full h-full bg-gradient-to-br from-otpLavender to-[#8a5ab0] rounded-2xl p-5 text-white backface-hidden flex flex-col justify-between">
                             <div class="flex justify-between items-start">
                                 <div class="font-semibold tracking-wider text-sm opacity-90">OTP Premium</div>
-                                <div class="w-10 h-6 bg-white/20 rounded flex items-center justify-center">
-                                    <div class="w-4 h-4 rounded-full bg-white/60 -mr-1"></div>
-                                    <div class="w-4 h-4 rounded-full border border-white/60 backdrop-blur-sm"></div>
-                                </div>
+                                <div class="font-bold italic">МИР</div>
                             </div>
                             <div>
                                 <div class="text-xs opacity-80 mb-1 font-medium">Зарплатная •••• 4512</div>
@@ -165,18 +158,13 @@
                             </div>
                             <div class="text-[10px] text-center w-full bg-black/10 rounded-lg py-1.5 mt-2 font-medium backdrop-blur-sm">Нажмите для реквизитов</div>
                         </div>
-                        
-                        <!-- Back of card (Детали Карты) -->
                         <div class="absolute inset-0 w-full h-full bg-slate-800 rounded-2xl p-5 text-white backface-hidden rotate-y-180 flex flex-col justify-between">
                             <div>
-                                <!-- Полный номер карты -->
                                 <div class="text-[10px] text-otpDarkBlue uppercase font-bold tracking-wider mb-1">Номер карты</div>
                                 <div class="font-mono text-sm tracking-widest flex justify-between items-center mb-3 border-b border-slate-600 pb-2">
                                     5432 1098 7654 4512
                                     <button class="text-otpOrange text-xs px-2 py-1 bg-otpOrange/10 rounded font-medium" onclick="event.stopPropagation(); alert('Скопировано');">Коп.</button>
                                 </div>
-                                
-                                <!-- Срок и CVC -->
                                 <div class="flex justify-between w-3/4">
                                     <div>
                                         <div class="text-[10px] text-otpDarkBlue uppercase font-bold tracking-wider mb-1">Срок</div>
@@ -188,10 +176,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
-                            <!-- Кнопка перехода к реквизитам счета (не на поверхности) -->
-                            <!-- Используем stopPropagation чтобы клик по кнопке не переворачивал карту обратно -->
-                            <button class="w-full mt-2 py-2 bg-slate-700 hover:bg-slate-600 rounded-xl text-xs font-semibold text-otpLightBlue transition-colors flex justify-center items-center gap-2" onclick="event.stopPropagation(); showAccountDetails();">
+                            <button class="w-full mt-2 py-2 bg-slate-700 hover:bg-slate-600 rounded-xl text-xs font-semibold text-otpLightBlue transition-colors flex justify-center items-center gap-2" onclick="event.stopPropagation(); alert('Реквизиты счета');">
                                 <span>Реквизиты счета</span>
                                 <span>→</span>
                             </button>
@@ -199,7 +184,7 @@
                     </div>
                 </div>
 
-                <!-- Quick Actions (Светло-голубые подложки, Лавандовые иконки) -->
+                <!-- Quick Actions -->
                 <div class="px-5 mb-6 flex gap-3 overflow-x-auto mockup-scroll">
                     <div class="flex flex-col items-center gap-1.5 shrink-0 cursor-pointer">
                         <div class="w-14 h-14 bg-otpLightBlue rounded-2xl flex items-center justify-center text-2xl text-otpLavender shadow-sm">💸</div>
@@ -219,7 +204,7 @@
                     </div>
                 </div>
 
-                <!-- 1 Smart Promo Slot (Оранжевый акцент) -->
+                <!-- Promo -->
                 <div class="px-5">
                     <div class="bg-otpOrange rounded-2xl p-4 relative overflow-hidden shadow-md text-white">
                         <div class="relative z-10 w-3/4">
@@ -233,60 +218,64 @@
             </div>
 
             <!-- ========================================== -->
-            <!-- SCREEN 2: ВИТРИНА (SHOWCASE)               -->
+            <!-- SCREEN 2: ВИТРИНА (SHOWCASE BASE)          -->
             <!-- ========================================== -->
             <div id="screen-showcase" class="absolute inset-0 mockup-scroll overflow-y-auto pb-24 transition-opacity duration-300 opacity-0 pointer-events-none z-0 bg-white">
                 
                 <div class="px-5 pt-4 pb-3 sticky top-0 bg-white/95 backdrop-blur-sm z-20 border-b border-slate-100">
                     <h2 class="text-2xl font-bold text-slate-800 mb-3">Витрина</h2>
-                    
-                    <!-- Search Bar in Showcase -->
-                    <div class="bg-slate-100 rounded-xl p-3 flex items-center gap-3 text-slate-500">
+                    <div class="bg-slate-100 rounded-xl p-3 flex items-center gap-3 text-slate-500 cursor-pointer" onclick="alert('Открытие умного поиска')">
                         <span class="text-lg">🔍</span>
                         <span class="text-sm font-medium text-otpDarkBlue">Найти продукт, операцию...</span>
                     </div>
                 </div>
 
                 <div class="px-5 mt-4">
-                    <!-- 6 Blocks Grid -->
+                    <!-- 6 Blocks Grid (Categorized) -->
                     <div class="grid grid-cols-2 gap-3">
-                        <div class="bg-slate-50 border border-slate-100 p-4 rounded-2xl flex flex-col items-center text-center gap-2 active:bg-slate-100 transition cursor-pointer hover:border-otpLavender">
-                            <div class="w-12 h-12 bg-otpLightBlue text-otpLavender rounded-full flex items-center justify-center text-2xl">💳</div>
+                        <!-- Карты -->
+                        <div class="bg-slate-50 border border-slate-100 p-4 rounded-2xl flex flex-col items-center text-center gap-2 active:bg-slate-100 transition cursor-pointer hover:border-otpLavender" onclick="openSubCategory('cards')">
+                            <div class="w-12 h-12 bg-otpLightBlue text-otpLavender rounded-full flex items-center justify-center text-2xl shadow-sm">💳</div>
                             <div>
                                 <div class="font-bold text-sm text-slate-800">Карты</div>
                                 <div class="text-[10px] text-otpDarkBlue font-medium leading-tight mt-1">Дебетовые, кредитные</div>
                             </div>
                         </div>
+                        <!-- Кредиты -->
+                        <div class="bg-slate-50 border border-slate-100 p-4 rounded-2xl flex flex-col items-center text-center gap-2 active:bg-slate-100 transition cursor-pointer hover:border-otpLavender" onclick="openSubCategory('credits')">
+                            <div class="w-12 h-12 bg-otpLightBlue text-otpLavender rounded-full flex items-center justify-center text-2xl shadow-sm">🤝</div>
+                            <div>
+                                <div class="font-bold text-sm text-slate-800">Кредиты</div>
+                                <div class="text-[10px] text-otpDarkBlue font-medium leading-tight mt-1">Наличные, экспресс</div>
+                            </div>
+                        </div>
+                        <!-- Сбережения -->
+                        <div class="bg-slate-50 border border-slate-100 p-4 rounded-2xl flex flex-col items-center text-center gap-2 active:bg-slate-100 transition cursor-pointer hover:border-otpLavender" onclick="openSubCategory('savings')">
+                            <div class="w-12 h-12 bg-otpLightBlue text-otpLavender rounded-full flex items-center justify-center text-2xl shadow-sm">💰</div>
+                            <div>
+                                <div class="font-bold text-sm text-slate-800">Сбережения</div>
+                                <div class="text-[10px] text-otpDarkBlue font-medium leading-tight mt-1">Вклады до 14,45%</div>
+                            </div>
+                        </div>
+                        <!-- Переводы -->
                         <div class="bg-slate-50 border border-slate-100 p-4 rounded-2xl flex flex-col items-center text-center gap-2 active:bg-slate-100 transition cursor-pointer hover:border-otpLavender">
-                            <div class="w-12 h-12 bg-otpLightBlue text-otpLavender rounded-full flex items-center justify-center text-2xl">🔄</div>
+                            <div class="w-12 h-12 bg-otpLightBlue text-otpLavender rounded-full flex items-center justify-center text-2xl shadow-sm">🔄</div>
                             <div>
                                 <div class="font-bold text-sm text-slate-800">Переводы</div>
                                 <div class="text-[10px] text-otpDarkBlue font-medium leading-tight mt-1">СБП, по реквизитам</div>
                             </div>
                         </div>
+                        <!-- Инвестиции -->
                         <div class="bg-slate-50 border border-slate-100 p-4 rounded-2xl flex flex-col items-center text-center gap-2 active:bg-slate-100 transition cursor-pointer hover:border-otpLavender">
-                            <div class="w-12 h-12 bg-otpLightBlue text-otpLavender rounded-full flex items-center justify-center text-2xl">🤝</div>
-                            <div>
-                                <div class="font-bold text-sm text-slate-800">Кредиты</div>
-                                <div class="text-[10px] text-otpDarkBlue font-medium leading-tight mt-1">Наличными, ипотека</div>
-                            </div>
-                        </div>
-                        <div class="bg-slate-50 border border-slate-100 p-4 rounded-2xl flex flex-col items-center text-center gap-2 active:bg-slate-100 transition cursor-pointer hover:border-otpLavender">
-                            <div class="w-12 h-12 bg-otpLightBlue text-otpLavender rounded-full flex items-center justify-center text-2xl">💰</div>
-                            <div>
-                                <div class="font-bold text-sm text-slate-800">Сбережения</div>
-                                <div class="text-[10px] text-otpDarkBlue font-medium leading-tight mt-1">Вклады, счета</div>
-                            </div>
-                        </div>
-                        <div class="bg-slate-50 border border-slate-100 p-4 rounded-2xl flex flex-col items-center text-center gap-2 active:bg-slate-100 transition cursor-pointer hover:border-otpLavender">
-                            <div class="w-12 h-12 bg-otpLightBlue text-otpLavender rounded-full flex items-center justify-center text-2xl">📈</div>
+                            <div class="w-12 h-12 bg-otpLightBlue text-otpLavender rounded-full flex items-center justify-center text-2xl shadow-sm">📈</div>
                             <div>
                                 <div class="font-bold text-sm text-slate-800">Инвестиции</div>
                                 <div class="text-[10px] text-otpDarkBlue font-medium leading-tight mt-1">Брокерский счет</div>
                             </div>
                         </div>
+                        <!-- Аналитика -->
                         <div class="bg-slate-50 border border-slate-100 p-4 rounded-2xl flex flex-col items-center text-center gap-2 active:bg-slate-100 transition cursor-pointer hover:border-otpLavender">
-                            <div class="w-12 h-12 bg-otpLightBlue text-otpLavender rounded-full flex items-center justify-center text-2xl">📊</div>
+                            <div class="w-12 h-12 bg-otpLightBlue text-otpLavender rounded-full flex items-center justify-center text-2xl shadow-sm">📊</div>
                             <div>
                                 <div class="font-bold text-sm text-slate-800">Аналитика</div>
                                 <div class="text-[10px] text-otpDarkBlue font-medium leading-tight mt-1">Траты, бюджет</div>
@@ -294,28 +283,135 @@
                         </div>
                     </div>
                     
-                    <div class="mt-6 p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                        <div class="flex items-center gap-2 mb-3">
-                            <span class="text-otpOrange">⭐</span>
-                            <h4 class="font-bold text-sm text-slate-800">Популярное сейчас</h4>
+                    <!-- Реферальный баннер (из скриншотов) -->
+                    <div class="mt-5 bg-gradient-to-r from-otpLavender to-[#B388D4] rounded-2xl p-5 relative overflow-hidden text-white shadow-sm cursor-pointer hover:opacity-95 transition">
+                        <div class="relative z-10 w-2/3">
+                            <div class="text-[10px] font-bold uppercase tracking-wider mb-1 opacity-90">Приглашайте и зарабатывайте!</div>
+                            <h4 class="font-bold text-lg leading-tight">Получите до 2 500 ₽ за друга</h4>
                         </div>
-                        <ul class="text-sm space-y-2">
-                            <li class="flex justify-between items-center bg-white p-3 rounded-xl shadow-sm cursor-pointer hover:bg-slate-50">
-                                <span class="font-medium text-slate-700">Вклад "Максимальный" 16%</span>
-                                <span class="text-otpOrange font-bold">→</span>
-                            </li>
-                            <li class="flex justify-between items-center bg-white p-3 rounded-xl shadow-sm cursor-pointer hover:bg-slate-50">
-                                <span class="font-medium text-slate-700">Кредитка 120 дней без %</span>
-                                <span class="text-otpOrange font-bold">→</span>
-                            </li>
-                        </ul>
+                        <div class="absolute right-0 bottom-0 text-6xl transform translate-x-2 translate-y-2">🎁</div>
+                    </div>
+
+                    <!-- Сервисы / Популярное -->
+                    <div class="mt-5 mb-4">
+                        <h4 class="font-bold text-lg text-slate-800 mb-3">Наши предложения</h4>
+                        <div class="space-y-3">
+                            <!-- Польза+ (из скриншотов) -->
+                            <div class="bg-slate-800 p-4 rounded-2xl flex justify-between items-center cursor-pointer shadow-sm">
+                                <div>
+                                    <div class="font-bold text-white text-sm mb-1">Польза+ 🔥</div>
+                                    <div class="text-[11px] text-slate-400">Забота о семье, доме и здоровье</div>
+                                </div>
+                                <div class="text-3xl">🛡️</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- SUB-SCREENS (DEEP NAVIGATION)              -->
+            <!-- ========================================== -->
+
+            <!-- 1. Карты (Cards Sub-screen) -->
+            <div id="sub-cards" class="absolute inset-0 bg-slate-50 z-30 slide-out slide-transition mockup-scroll overflow-y-auto pb-24">
+                <div class="px-5 pt-4 pb-3 sticky top-0 bg-slate-50/95 backdrop-blur-sm z-40 border-b border-slate-200 flex items-center gap-3">
+                    <button class="w-8 h-8 flex items-center justify-center text-xl text-slate-600 rounded-full hover:bg-slate-200" onclick="closeSubCategory('cards')">←</button>
+                    <h2 class="text-xl font-bold text-slate-800">Карты</h2>
+                </div>
+                <div class="px-5 mt-4 space-y-3">
+                    <!-- Дебетовая карта -->
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4 cursor-pointer">
+                        <div class="w-14 h-10 bg-otpGreen rounded-lg flex items-center justify-center font-bold text-slate-800 text-[10px] border border-slate-200 shadow-inner">debit</div>
+                        <div class="flex-1">
+                            <div class="font-bold text-slate-800 text-sm mb-0.5">Дебетовая карта</div>
+                            <div class="text-[10px] text-slate-500 leading-tight">Бесплатная карта с высоким кэшбэком на АЗС, ЖКХ, рестораны до 10%</div>
+                        </div>
+                    </div>
+                    <!-- Кредитная карта -->
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4 cursor-pointer">
+                        <div class="w-14 h-10 bg-otpOrange rounded-lg flex items-center justify-center font-bold text-white text-[10px] border border-orange-400 shadow-inner">credit</div>
+                        <div class="flex-1">
+                            <div class="font-bold text-slate-800 text-sm mb-0.5">Кредитная карта за 0 ₽</div>
+                            <div class="text-[10px] text-slate-500 leading-tight">120 дней без процентов и до 10% кэшбэка в топ категориях</div>
+                        </div>
+                    </div>
+                    <!-- Платежный стикер -->
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4 cursor-pointer">
+                        <div class="w-10 h-14 bg-otpLavender rounded-lg flex items-center justify-center font-bold text-white text-xs border border-purple-400 shadow-inner">MIR</div>
+                        <div class="flex-1">
+                            <div class="font-bold text-slate-800 text-sm mb-0.5">Платежный стикер</div>
+                            <div class="text-[10px] text-slate-500 leading-tight">Наклейте на телефон и платите в одно касание</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Кредиты (Credits Sub-screen) -->
+            <div id="sub-credits" class="absolute inset-0 bg-slate-50 z-30 slide-out slide-transition mockup-scroll overflow-y-auto pb-24">
+                <div class="px-5 pt-4 pb-3 sticky top-0 bg-slate-50/95 backdrop-blur-sm z-40 border-b border-slate-200 flex items-center gap-3">
+                    <button class="w-8 h-8 flex items-center justify-center text-xl text-slate-600 rounded-full hover:bg-slate-200" onclick="closeSubCategory('credits')">←</button>
+                    <h2 class="text-xl font-bold text-slate-800">Кредиты</h2>
+                </div>
+                <div class="px-5 mt-4 space-y-3">
+                    <!-- Возьмите наличные -->
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4 cursor-pointer">
+                        <div class="w-12 h-12 bg-green-100 text-green-600 rounded-xl flex items-center justify-center text-2xl">💸</div>
+                        <div class="flex-1">
+                            <div class="font-bold text-slate-800 text-sm mb-0.5">Возьмите наличные</div>
+                            <div class="text-[10px] text-slate-500 leading-tight">До 3 000 000 ₽, решение за 1 минуту</div>
+                        </div>
+                    </div>
+                    <!-- Экспресс-деньги -->
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4 cursor-pointer">
+                        <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center text-2xl">⏱️</div>
+                        <div class="flex-1">
+                            <div class="font-bold text-slate-800 text-sm mb-0.5">Экспресс-деньги</div>
+                            <div class="text-[10px] text-slate-500 leading-tight">От 5 000 ₽ до 12 месяцев быстро и без справок</div>
+                        </div>
+                    </div>
+                    <!-- Рефинансирование -->
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4 cursor-pointer">
+                        <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center text-2xl">📉</div>
+                        <div class="flex-1">
+                            <div class="font-bold text-slate-800 text-sm mb-0.5">Рефинансирование</div>
+                            <div class="text-[10px] text-slate-500 leading-tight">Уменьшите платежи по кредитам и получите дополнительные деньги</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Сбережения (Savings Sub-screen) -->
+            <div id="sub-savings" class="absolute inset-0 bg-slate-50 z-30 slide-out slide-transition mockup-scroll overflow-y-auto pb-24">
+                <div class="px-5 pt-4 pb-3 sticky top-0 bg-slate-50/95 backdrop-blur-sm z-40 border-b border-slate-200 flex items-center gap-3">
+                    <button class="w-8 h-8 flex items-center justify-center text-xl text-slate-600 rounded-full hover:bg-slate-200" onclick="closeSubCategory('savings')">←</button>
+                    <h2 class="text-xl font-bold text-slate-800">Сбережения</h2>
+                </div>
+                <div class="px-5 mt-4 space-y-3">
+                    <!-- Выгодный вклад -->
+                    <div class="bg-slate-800 p-4 rounded-2xl shadow-sm flex items-center gap-4 cursor-pointer relative overflow-hidden">
+                        <div class="flex-1 relative z-10">
+                            <div class="font-bold text-white text-sm mb-1">Выгодная ставка 14,45% по вкладу</div>
+                            <button class="mt-2 text-[10px] font-bold bg-white text-slate-800 px-3 py-1.5 rounded-lg">Оформить</button>
+                        </div>
+                        <div class="text-5xl opacity-80 relative z-10">🪐</div>
+                        <!-- Декоративный круг -->
+                        <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-otpLavender rounded-full opacity-20 blur-xl"></div>
+                    </div>
+                    <!-- Накопительный счет -->
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4 cursor-pointer">
+                        <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center text-2xl">🐖</div>
+                        <div class="flex-1">
+                            <div class="font-bold text-slate-800 text-sm mb-0.5">Накопительный счет</div>
+                            <div class="text-[10px] text-slate-500 leading-tight">Гибкое пополнение и снятие без потери процентов</div>
+                        </div>
                     </div>
                 </div>
             </div>
 
         </div>
 
-        <!-- Bottom Navigation Bar (Только 2 вкладки) -->
+        <!-- Bottom Navigation Bar -->
         <div class="absolute bottom-0 w-full h-[88px] bg-white border-t border-slate-100 flex justify-center items-start pt-3 pb-8 z-50">
             <!-- Главная -->
             <button onclick="switchAppTab('main')" id="nav-main" class="flex flex-col items-center gap-1.5 w-1/2 text-otpOrange transition-colors">
@@ -329,18 +425,21 @@
             </button>
         </div>
         
-        <!-- Home Indicator (iOS line) -->
+        <!-- Home Indicator -->
         <div class="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-32 h-1.5 bg-slate-900 rounded-full z-50"></div>
     </div>
 </div>
 
 <script>
-    // --- Mobile App Mockup Navigation ---
+    // --- 1. Главная навигация (Табы) ---
     function switchAppTab(tabName) {
         const screenMain = document.getElementById('screen-main');
         const screenShowcase = document.getElementById('screen-showcase');
         const navMain = document.getElementById('nav-main');
         const navShowcase = document.getElementById('nav-showcase');
+
+        // Закрываем все открытые под-экраны при переключении табов
+        closeAllSubCategories();
 
         if (tabName === 'main') {
             screenMain.classList.remove('opacity-0', 'pointer-events-none');
@@ -365,17 +464,38 @@
         }
     }
 
-    // --- 3D Card Flip Interaction ---
+    // --- 2. Переворот карты ---
     function toggleCardFlip() {
         const card = document.getElementById('bank-card');
         card.classList.toggle('rotate-y-180');
     }
 
-    // --- Show Account Details Action ---
-    function showAccountDetails() {
-        // Здесь в реальном приложении открывался бы боттом-шит (шторка снизу)
-        // Для прототипа показываем стандартный alert
-        alert("Реквизиты счета для перевода:\n\nНомер счета: 40817810099910004312\nБИК: 044525311\nК/С: 30101810000000000311\nПолучатель: Иванов Александр Сергеевич");
+    // --- 3. Логика Под-экранов (Глубокие экраны Витрины) ---
+    function openSubCategory(catId) {
+        const subScreen = document.getElementById('sub-' + catId);
+        if (subScreen) {
+            subScreen.classList.remove('slide-out');
+            subScreen.classList.add('slide-in');
+        }
+    }
+
+    function closeSubCategory(catId) {
+        const subScreen = document.getElementById('sub-' + catId);
+        if (subScreen) {
+            subScreen.classList.remove('slide-in');
+            subScreen.classList.add('slide-out');
+        }
+    }
+
+    function closeAllSubCategories() {
+        const subs = ['cards', 'credits', 'savings'];
+        subs.forEach(catId => {
+            const el = document.getElementById('sub-' + catId);
+            if (el) {
+                el.classList.remove('slide-in');
+                el.classList.add('slide-out');
+            }
+        });
     }
 </script>
 </body>
