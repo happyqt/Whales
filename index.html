@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OTP Focus: Мобильный прототип v4</title>
+    <title>OTP Focus: Мобильный прототип v5</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script>
@@ -14,27 +14,29 @@
                         otpOrange: '#FE7F32',
                         otpLavender: '#9F6FC3',
                         otpLightBlue: '#C7E1FC',
-                        otpDarkBlue: '#B2BDC9',
-                        otpGreen: '#C1FF04',
+                        otpDarkBlue: '#8A98A9',
+                        otpGreen: '#C1FF04'
                     },
                     fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
+                        sans: ['Inter', 'sans-serif']
+                    },
+                    boxShadow: {
+                        soft: '0 8px 30px rgba(15, 23, 42, 0.08)'
                     }
                 }
             }
-        }
+        };
     </script>
     <style>
-        body { 
-            background-color: #1e293b; 
+        body {
+            background-color: #1e293b;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            overflow: hidden; 
+            overflow: hidden;
         }
-        
         .scale-wrapper {
             transform: scale(0.85);
             transform-origin: center center;
@@ -42,18 +44,12 @@
         }
         @media (max-height: 900px) { .scale-wrapper { transform: scale(0.9); } }
         @media (max-height: 800px) { .scale-wrapper { transform: scale(0.8); } }
-        @media (max-height: 700px) { .scale-wrapper { transform: scale(0.7); } }
-        
-        .perspective-1000 { perspective: 1000px; }
-        .transform-style-3d { transform-style: preserve-3d; }
-        .backface-hidden { backface-visibility: hidden; }
-        .rotate-y-180 { transform: rotateY(180deg); }
-        .flip-transition { transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1); }
-        
+        @media (max-height: 700px) { .scale-wrapper { transform: scale(0.72); } }
+
         .phone-mockup {
             width: 375px;
             height: 812px;
-            background: #ffffff;
+            background: #f8fafc;
             border: 14px solid #0f172a;
             border-radius: 48px;
             position: relative;
@@ -70,37 +66,65 @@
             background: #0f172a;
             border-bottom-left-radius: 20px;
             border-bottom-right-radius: 20px;
-            z-index: 50;
+            z-index: 120;
         }
 
         .mockup-scroll::-webkit-scrollbar { display: none; }
         .mockup-scroll { -ms-overflow-style: none; scrollbar-width: none; }
 
-        .slide-in { transform: translateX(0%); }
-        .slide-out { transform: translateX(100%); }
-        .slide-transition { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .perspective-1000 { perspective: 1000px; }
+        .transform-style-3d { transform-style: preserve-3d; }
+        .backface-hidden { backface-visibility: hidden; }
+        .rotate-y-180 { transform: rotateY(180deg); }
+        .flip-transition { transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1); }
 
-        /* Bottom Sheet Styles */
-        .sheet-hidden { transform: translateY(100%); }
-        .sheet-visible { transform: translateY(0); }
-        .backdrop-hidden { opacity: 0; pointer-events: none; }
-        .backdrop-visible { opacity: 1; pointer-events: auto; }
+        .slide-panel {
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease;
+        }
+        .search-hidden {
+            transform: translateY(20px);
+            opacity: 0;
+            pointer-events: none;
+        }
+        .search-visible {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .sheet-hidden {
+            transform: translateY(100%);
+            pointer-events: none;
+        }
+        .sheet-visible {
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+        .backdrop-hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .backdrop-visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .focus-pulse {
+            animation: focusPulse 1.8s ease;
+        }
+        @keyframes focusPulse {
+            0% { box-shadow: 0 0 0 0 rgba(254,127,50,0.0); }
+            25% { box-shadow: 0 0 0 4px rgba(254,127,50,0.22); }
+            55% { box-shadow: 0 0 0 8px rgba(254,127,50,0.14); }
+            100% { box-shadow: 0 0 0 0 rgba(254,127,50,0.0); }
+        }
     </style>
 </head>
-<body class="antialiased">
-
-<!-- Application Structure Plan: 
-     - Added a universal Bottom Sheet (шторка) for the Quick Actions on the Main screen.
-     - The Bottom Sheet has a dark overlay (backdrop) that fades in, and the sheet itself slides up.
-     - Content inside the sheet swaps dynamically based on which button was clicked (Transfer, Pay, QR, History).
--->
-
+<body class="antialiased font-sans">
 <div class="scale-wrapper">
     <div class="phone-mockup flex flex-col bg-slate-50 relative">
         <div class="notch"></div>
-        
+
         <!-- Status Bar -->
-        <div class="h-12 w-full flex justify-between items-end px-6 pb-2 text-[12px] font-semibold text-slate-800 z-40 bg-transparent">
+        <div class="h-12 w-full flex justify-between items-end px-6 pb-2 text-[12px] font-semibold text-slate-800 z-[110] bg-transparent">
             <span>09:41</span>
             <span class="flex gap-1.5 items-center">
                 <span class="font-bold">LTE</span>
@@ -110,551 +134,1120 @@
             </span>
         </div>
 
-        <!-- MOCKUP SCREENS CONTAINER -->
+        <!-- Main screen stack -->
         <div class="flex-1 relative overflow-hidden">
-            
-            <!-- ========================================== -->
-            <!-- SCREEN 1: ГЛАВНАЯ (MAIN)                   -->
-            <!-- ========================================== -->
-            <div id="screen-main" class="absolute inset-0 mockup-scroll overflow-y-auto pb-24 transition-opacity duration-300 opacity-100 z-10">
-                <!-- Top Header -->
-                <div class="px-5 pt-3 flex justify-between items-center mb-5">
-                    <div class="flex items-center gap-3">
-                        <div class="w-11 h-11 rounded-full bg-otpLightBlue flex items-center justify-center font-bold text-otpLavender text-lg border-2 border-white shadow-sm">А</div>
-                        <div>
-                            <div class="text-xs text-otpDarkBlue font-medium">Добрый день,</div>
-                            <div class="font-bold text-slate-800 text-lg">Александр</div>
-                        </div>
-                    </div>
-                    <!-- Блок с Поиском и Чатом -->
-                    <div class="flex gap-2">
-                        <button class="w-10 h-10 bg-white rounded-full shadow-sm border border-slate-100 flex items-center justify-center text-lg text-otpDarkBlue hover:text-otpOrange transition" onclick="alert('Открытие умного поиска')">🔍</button>
-                        <button class="w-10 h-10 bg-white rounded-full shadow-sm border border-slate-100 flex items-center justify-center text-lg text-otpOrange hover:bg-slate-50 transition" onclick="alert('Открытие чата поддержки')">💬</button>
-                    </div>
-                </div>
+            <!-- Home -->
+            <section id="screen-home" class="absolute inset-0 mockup-scroll overflow-y-auto pb-28 z-10 bg-slate-50"></section>
 
-                <!-- Total Balance & Cashback Widget -->
-                <div class="px-5 mb-5 flex gap-3 items-end justify-between">
-                    <div>
-                        <div class="text-sm text-otpDarkBlue font-medium mb-1">Всего средств</div>
-                        <div class="text-3xl font-bold text-slate-800 tracking-tight">142 500 ₽</div>
-                    </div>
-                    <div class="bg-otpGreen rounded-xl p-2.5 shadow-sm text-center min-w-[90px] cursor-pointer hover:opacity-90 transition" onclick="alert('Детали кэшбэка')">
-                        <div class="text-[10px] font-bold text-slate-800 uppercase tracking-wider mb-0.5">Кэшбэк</div>
-                        <div class="text-sm font-bold text-slate-900">1 250 ₽</div>
-                    </div>
-                </div>
+            <!-- Showcase -->
+            <section id="screen-showcase" class="absolute inset-0 mockup-scroll overflow-y-auto pb-28 opacity-0 pointer-events-none z-0 bg-slate-50 transition-opacity duration-300"></section>
 
-                <!-- FLIPPABLE CARD WIDGET -->
-                <div class="px-5 mb-6 perspective-1000">
-                    <div id="bank-card" class="relative w-full h-48 rounded-2xl cursor-pointer transform-style-3d flip-transition shadow-lg" onclick="toggleCardFlip()">
-                        <div class="absolute inset-0 w-full h-full bg-gradient-to-br from-otpLavender to-[#8a5ab0] rounded-2xl p-5 text-white backface-hidden flex flex-col justify-between">
-                            <div class="flex justify-between items-start">
-                                <div class="font-semibold tracking-wider text-sm opacity-90">OTP Premium</div>
-                                <div class="font-bold italic">МИР</div>
-                            </div>
-                            <div>
-                                <div class="text-xs opacity-80 mb-1 font-medium">Зарплатная •••• 4512</div>
-                                <div class="text-3xl font-bold">12 500 ₽</div>
-                            </div>
-                            <div class="text-[10px] text-center w-full bg-black/10 rounded-lg py-1.5 mt-2 font-medium backdrop-blur-sm">Нажмите для реквизитов</div>
-                        </div>
-                        <div class="absolute inset-0 w-full h-full bg-slate-800 rounded-2xl p-5 text-white backface-hidden rotate-y-180 flex flex-col justify-between">
-                            <div>
-                                <div class="text-[10px] text-otpDarkBlue uppercase font-bold tracking-wider mb-1">Номер карты</div>
-                                <div class="font-mono text-sm tracking-widest flex justify-between items-center mb-3 border-b border-slate-600 pb-2">
-                                    5432 1098 7654 4512
-                                    <button class="text-otpOrange text-xs px-2 py-1 bg-otpOrange/10 rounded font-medium" onclick="event.stopPropagation(); alert('Скопировано');">Коп.</button>
-                                </div>
-                                <div class="flex justify-between w-3/4">
-                                    <div>
-                                        <div class="text-[10px] text-otpDarkBlue uppercase font-bold tracking-wider mb-1">Срок</div>
-                                        <div class="font-mono text-sm tracking-widest">09/28</div>
-                                    </div>
-                                    <div>
-                                        <div class="text-[10px] text-otpDarkBlue uppercase font-bold tracking-wider mb-1">CVC</div>
-                                        <div class="font-mono text-sm tracking-widest bg-slate-700 px-2 py-0.5 rounded cursor-pointer" onclick="event.stopPropagation(); this.innerText='823';">Показать</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <button class="w-full mt-2 py-2 bg-slate-700 hover:bg-slate-600 rounded-xl text-xs font-semibold text-otpLightBlue transition-colors flex justify-center items-center gap-2" onclick="event.stopPropagation(); alert('Реквизиты счета');">
-                                <span>Реквизиты счета</span>
-                                <span>→</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+            <!-- Category screens -->
+            <section id="category-screen" class="absolute inset-0 bg-slate-50 z-30 translate-x-full slide-panel mockup-scroll overflow-y-auto pb-28"></section>
+        </div>
 
-                <!-- QUICK ACTIONS (UPDATED TO OPEN BOTTOM SHEET) -->
-                <div class="px-5 mb-6 flex gap-3 overflow-x-auto mockup-scroll">
-                    <div class="flex flex-col items-center gap-1.5 shrink-0 cursor-pointer" onclick="openBottomSheet('transfer')">
-                        <div class="w-14 h-14 bg-otpLightBlue rounded-2xl flex items-center justify-center text-2xl text-otpLavender shadow-sm active:scale-95 transition-transform">💸</div>
-                        <span class="text-[11px] font-semibold text-slate-700">Перевести</span>
-                    </div>
-                    <div class="flex flex-col items-center gap-1.5 shrink-0 cursor-pointer" onclick="openBottomSheet('pay')">
-                        <div class="w-14 h-14 bg-otpLightBlue rounded-2xl flex items-center justify-center text-2xl text-otpLavender shadow-sm active:scale-95 transition-transform">📱</div>
-                        <span class="text-[11px] font-semibold text-slate-700">Оплатить</span>
-                    </div>
-                    <div class="flex flex-col items-center gap-1.5 shrink-0 cursor-pointer" onclick="openBottomSheet('qr')">
-                        <div class="w-14 h-14 bg-otpLightBlue rounded-2xl flex items-center justify-center text-xl font-bold text-otpLavender shadow-sm active:scale-95 transition-transform">QR</div>
-                        <span class="text-[11px] font-semibold text-slate-700">СБП</span>
-                    </div>
-                    <div class="flex flex-col items-center gap-1.5 shrink-0 cursor-pointer" onclick="openBottomSheet('history')">
-                        <div class="w-14 h-14 bg-otpLightBlue rounded-2xl flex items-center justify-center text-2xl text-otpLavender shadow-sm active:scale-95 transition-transform">🧾</div>
-                        <span class="text-[11px] font-semibold text-slate-700">История</span>
-                    </div>
-                </div>
-
-                <!-- Promo -->
-                <div class="px-5">
-                    <div class="bg-otpOrange rounded-2xl p-4 relative overflow-hidden shadow-md text-white">
-                        <div class="relative z-10 w-3/4">
-                            <div class="text-[10px] font-bold text-white/80 uppercase tracking-wider mb-1">Специально для вас</div>
-                            <h4 class="font-bold text-sm mb-3 leading-snug">Погасите коммуналку без комиссии сегодня</h4>
-                            <button class="bg-white text-otpOrange text-xs px-4 py-2 rounded-xl font-bold shadow-sm hover:bg-slate-50 transition">Оплатить</button>
-                        </div>
-                        <div class="absolute right-0 bottom-0 text-7xl opacity-20 transform translate-x-2 translate-y-4 pointer-events-none">🏠</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ========================================== -->
-            <!-- SCREEN 2: ВИТРИНА (SHOWCASE BASE)          -->
-            <!-- ========================================== -->
-            <div id="screen-showcase" class="absolute inset-0 mockup-scroll overflow-y-auto pb-24 transition-opacity duration-300 opacity-0 pointer-events-none z-0 bg-white">
-                
-                <div class="px-5 pt-4 pb-3 sticky top-0 bg-white/95 backdrop-blur-sm z-20 border-b border-slate-100">
-                    <h2 class="text-2xl font-bold text-slate-800 mb-3">Витрина</h2>
-                    <div class="bg-slate-100 rounded-xl p-3 flex items-center gap-3 text-slate-500 cursor-pointer" onclick="alert('Открытие умного поиска')">
+        <!-- Search overlay -->
+        <section id="search-overlay" class="absolute inset-0 bg-slate-50 z-[80] search-hidden slide-panel flex flex-col">
+            <div class="h-12"></div>
+            <div class="px-5 pt-3 pb-4 border-b border-slate-200 bg-slate-50/95 backdrop-blur-sm">
+                <div class="flex items-center gap-3">
+                    <button class="w-11 h-11 rounded-2xl bg-white border border-slate-200 shadow-sm flex items-center justify-center text-lg text-slate-700" onclick="closeSearch()">←</button>
+                    <div class="flex-1 bg-white rounded-2xl border border-slate-200 shadow-sm px-4 py-3 flex items-center gap-3">
                         <span class="text-lg">🔍</span>
-                        <span class="text-sm font-medium text-otpDarkBlue">Найти продукт, операцию...</span>
-                    </div>
-                </div>
-
-                <div class="px-5 mt-4">
-                    <!-- 6 Blocks Grid (Categorized) -->
-                    <div class="grid grid-cols-2 gap-3">
-                        <!-- Карты -->
-                        <div class="bg-slate-50 border border-slate-100 p-4 rounded-2xl flex flex-col items-center text-center gap-2 active:bg-slate-100 transition cursor-pointer hover:border-otpLavender" onclick="openSubCategory('cards')">
-                            <div class="w-12 h-12 bg-otpLightBlue text-otpLavender rounded-full flex items-center justify-center text-2xl shadow-sm">💳</div>
-                            <div>
-                                <div class="font-bold text-sm text-slate-800">Карты</div>
-                                <div class="text-[10px] text-otpDarkBlue font-medium leading-tight mt-1">Дебетовые, кредитные</div>
-                            </div>
-                        </div>
-                        <!-- Кредиты -->
-                        <div class="bg-slate-50 border border-slate-100 p-4 rounded-2xl flex flex-col items-center text-center gap-2 active:bg-slate-100 transition cursor-pointer hover:border-otpLavender" onclick="openSubCategory('credits')">
-                            <div class="w-12 h-12 bg-otpLightBlue text-otpLavender rounded-full flex items-center justify-center text-2xl shadow-sm">🤝</div>
-                            <div>
-                                <div class="font-bold text-sm text-slate-800">Кредиты</div>
-                                <div class="text-[10px] text-otpDarkBlue font-medium leading-tight mt-1">Наличные, экспресс</div>
-                            </div>
-                        </div>
-                        <!-- Сбережения -->
-                        <div class="bg-slate-50 border border-slate-100 p-4 rounded-2xl flex flex-col items-center text-center gap-2 active:bg-slate-100 transition cursor-pointer hover:border-otpLavender" onclick="openSubCategory('savings')">
-                            <div class="w-12 h-12 bg-otpLightBlue text-otpLavender rounded-full flex items-center justify-center text-2xl shadow-sm">💰</div>
-                            <div>
-                                <div class="font-bold text-sm text-slate-800">Сбережения</div>
-                                <div class="text-[10px] text-otpDarkBlue font-medium leading-tight mt-1">Вклады до 14,45%</div>
-                            </div>
-                        </div>
-                        <!-- Переводы -->
-                        <div class="bg-slate-50 border border-slate-100 p-4 rounded-2xl flex flex-col items-center text-center gap-2 active:bg-slate-100 transition cursor-pointer hover:border-otpLavender">
-                            <div class="w-12 h-12 bg-otpLightBlue text-otpLavender rounded-full flex items-center justify-center text-2xl shadow-sm">🔄</div>
-                            <div>
-                                <div class="font-bold text-sm text-slate-800">Переводы</div>
-                                <div class="text-[10px] text-otpDarkBlue font-medium leading-tight mt-1">СБП, по реквизитам</div>
-                            </div>
-                        </div>
-                        <!-- Инвестиции -->
-                        <div class="bg-slate-50 border border-slate-100 p-4 rounded-2xl flex flex-col items-center text-center gap-2 active:bg-slate-100 transition cursor-pointer hover:border-otpLavender">
-                            <div class="w-12 h-12 bg-otpLightBlue text-otpLavender rounded-full flex items-center justify-center text-2xl shadow-sm">📈</div>
-                            <div>
-                                <div class="font-bold text-sm text-slate-800">Инвестиции</div>
-                                <div class="text-[10px] text-otpDarkBlue font-medium leading-tight mt-1">Брокерский счет</div>
-                            </div>
-                        </div>
-                        <!-- Аналитика -->
-                        <div class="bg-slate-50 border border-slate-100 p-4 rounded-2xl flex flex-col items-center text-center gap-2 active:bg-slate-100 transition cursor-pointer hover:border-otpLavender">
-                            <div class="w-12 h-12 bg-otpLightBlue text-otpLavender rounded-full flex items-center justify-center text-2xl shadow-sm">📊</div>
-                            <div>
-                                <div class="font-bold text-sm text-slate-800">Аналитика</div>
-                                <div class="text-[10px] text-otpDarkBlue font-medium leading-tight mt-1">Траты, бюджет</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Реферальный баннер -->
-                    <div class="mt-5 bg-gradient-to-r from-otpLavender to-[#B388D4] rounded-2xl p-5 relative overflow-hidden text-white shadow-sm cursor-pointer hover:opacity-95 transition">
-                        <div class="relative z-10 w-2/3">
-                            <div class="text-[10px] font-bold uppercase tracking-wider mb-1 opacity-90">Приглашайте и зарабатывайте!</div>
-                            <h4 class="font-bold text-lg leading-tight">Получите до 2 500 ₽ за друга</h4>
-                        </div>
-                        <div class="absolute right-0 bottom-0 text-6xl transform translate-x-2 translate-y-2">🎁</div>
-                    </div>
-
-                    <!-- Сервисы / Популярное -->
-                    <div class="mt-5 mb-4">
-                        <h4 class="font-bold text-lg text-slate-800 mb-3">Наши предложения</h4>
-                        <div class="space-y-3">
-                            <!-- Польза+ -->
-                            <div class="bg-slate-800 p-4 rounded-2xl flex justify-between items-center cursor-pointer shadow-sm">
-                                <div>
-                                    <div class="font-bold text-white text-sm mb-1">Польза+ 🔥</div>
-                                    <div class="text-[11px] text-slate-400">Забота о семье, доме и здоровье</div>
-                                </div>
-                                <div class="text-3xl">🛡️</div>
-                            </div>
-                        </div>
+                        <input id="search-input" type="text" class="w-full outline-none bg-transparent text-[15px] text-slate-800 placeholder:text-slate-400 font-medium" placeholder="Найти: перевести, оплатить ЖКХ, открыть вклад…" autocomplete="off">
                     </div>
                 </div>
             </div>
+            <div id="search-scroll" class="flex-1 overflow-y-auto mockup-scroll px-5 py-4"></div>
+        </section>
 
-            <!-- ========================================== -->
-            <!-- SUB-SCREENS (DEEP NAVIGATION)              -->
-            <!-- ========================================== -->
-
-            <!-- 1. Карты (Cards Sub-screen) -->
-            <div id="sub-cards" class="absolute inset-0 bg-slate-50 z-30 slide-out slide-transition mockup-scroll overflow-y-auto pb-24">
-                <div class="px-5 pt-4 pb-3 sticky top-0 bg-slate-50/95 backdrop-blur-sm z-40 border-b border-slate-200 flex items-center gap-3">
-                    <button class="w-8 h-8 flex items-center justify-center text-xl text-slate-600 rounded-full hover:bg-slate-200" onclick="closeSubCategory('cards')">←</button>
-                    <h2 class="text-xl font-bold text-slate-800">Карты</h2>
-                </div>
-                <div class="px-5 mt-4 space-y-3">
-                    <!-- Дебетовая карта -->
-                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4 cursor-pointer">
-                        <div class="w-14 h-10 bg-otpGreen rounded-lg flex items-center justify-center font-bold text-slate-800 text-[10px] border border-slate-200 shadow-inner">debit</div>
-                        <div class="flex-1">
-                            <div class="font-bold text-slate-800 text-sm mb-0.5">Дебетовая карта</div>
-                            <div class="text-[10px] text-slate-500 leading-tight">Бесплатная карта с высоким кэшбэком на АЗС, ЖКХ, рестораны до 10%</div>
-                        </div>
-                    </div>
-                    <!-- Кредитная карта -->
-                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4 cursor-pointer">
-                        <div class="w-14 h-10 bg-otpOrange rounded-lg flex items-center justify-center font-bold text-white text-[10px] border border-orange-400 shadow-inner">credit</div>
-                        <div class="flex-1">
-                            <div class="font-bold text-slate-800 text-sm mb-0.5">Кредитная карта за 0 ₽</div>
-                            <div class="text-[10px] text-slate-500 leading-tight">120 дней без процентов и до 10% кэшбэка в топ категориях</div>
-                        </div>
-                    </div>
-                    <!-- Платежный стикер -->
-                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4 cursor-pointer">
-                        <div class="w-10 h-14 bg-otpLavender rounded-lg flex items-center justify-center font-bold text-white text-xs border border-purple-400 shadow-inner">MIR</div>
-                        <div class="flex-1">
-                            <div class="font-bold text-slate-800 text-sm mb-0.5">Платежный стикер</div>
-                            <div class="text-[10px] text-slate-500 leading-tight">Наклейте на телефон и платите в одно касание</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 2. Кредиты (Credits Sub-screen) -->
-            <div id="sub-credits" class="absolute inset-0 bg-slate-50 z-30 slide-out slide-transition mockup-scroll overflow-y-auto pb-24">
-                <div class="px-5 pt-4 pb-3 sticky top-0 bg-slate-50/95 backdrop-blur-sm z-40 border-b border-slate-200 flex items-center gap-3">
-                    <button class="w-8 h-8 flex items-center justify-center text-xl text-slate-600 rounded-full hover:bg-slate-200" onclick="closeSubCategory('credits')">←</button>
-                    <h2 class="text-xl font-bold text-slate-800">Кредиты</h2>
-                </div>
-                <div class="px-5 mt-4 space-y-3">
-                    <!-- Возьмите наличные -->
-                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4 cursor-pointer">
-                        <div class="w-12 h-12 bg-green-100 text-green-600 rounded-xl flex items-center justify-center text-2xl">💸</div>
-                        <div class="flex-1">
-                            <div class="font-bold text-slate-800 text-sm mb-0.5">Возьмите наличные</div>
-                            <div class="text-[10px] text-slate-500 leading-tight">До 3 000 000 ₽, решение за 1 минуту</div>
-                        </div>
-                    </div>
-                    <!-- Экспресс-деньги -->
-                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4 cursor-pointer">
-                        <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center text-2xl">⏱️</div>
-                        <div class="flex-1">
-                            <div class="font-bold text-slate-800 text-sm mb-0.5">Экспресс-деньги</div>
-                            <div class="text-[10px] text-slate-500 leading-tight">От 5 000 ₽ до 12 месяцев быстро и без справок</div>
-                        </div>
-                    </div>
-                    <!-- Рефинансирование -->
-                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4 cursor-pointer">
-                        <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center text-2xl">📉</div>
-                        <div class="flex-1">
-                            <div class="font-bold text-slate-800 text-sm mb-0.5">Рефинансирование</div>
-                            <div class="text-[10px] text-slate-500 leading-tight">Уменьшите платежи по кредитам и получите дополнительные деньги</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 3. Сбережения (Savings Sub-screen) -->
-            <div id="sub-savings" class="absolute inset-0 bg-slate-50 z-30 slide-out slide-transition mockup-scroll overflow-y-auto pb-24">
-                <div class="px-5 pt-4 pb-3 sticky top-0 bg-slate-50/95 backdrop-blur-sm z-40 border-b border-slate-200 flex items-center gap-3">
-                    <button class="w-8 h-8 flex items-center justify-center text-xl text-slate-600 rounded-full hover:bg-slate-200" onclick="closeSubCategory('savings')">←</button>
-                    <h2 class="text-xl font-bold text-slate-800">Сбережения</h2>
-                </div>
-                <div class="px-5 mt-4 space-y-3">
-                    <!-- Выгодный вклад -->
-                    <div class="bg-slate-800 p-4 rounded-2xl shadow-sm flex items-center gap-4 cursor-pointer relative overflow-hidden">
-                        <div class="flex-1 relative z-10">
-                            <div class="font-bold text-white text-sm mb-1">Выгодная ставка 14,45% по вкладу</div>
-                            <button class="mt-2 text-[10px] font-bold bg-white text-slate-800 px-3 py-1.5 rounded-lg">Оформить</button>
-                        </div>
-                        <div class="text-5xl opacity-80 relative z-10">🪐</div>
-                        <!-- Декоративный круг -->
-                        <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-otpLavender rounded-full opacity-20 blur-xl"></div>
-                    </div>
-                    <!-- Накопительный счет -->
-                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4 cursor-pointer">
-                        <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center text-2xl">🐖</div>
-                        <div class="flex-1">
-                            <div class="font-bold text-slate-800 text-sm mb-0.5">Накопительный счет</div>
-                            <div class="text-[10px] text-slate-500 leading-tight">Гибкое пополнение и снятие без потери процентов</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- ========================================== -->
-        <!-- BOTTOM SHEET (ВСПЛЫВАЮЩАЯ ШТОРКА)          -->
-        <!-- ========================================== -->
-        <!-- Dark Overlay -->
-        <div id="sheet-backdrop" class="absolute inset-0 bg-slate-900/60 z-[60] backdrop-hidden transition-opacity duration-300" onclick="closeBottomSheet()"></div>
-        
-        <!-- Sheet Container -->
-        <div id="bottom-sheet" class="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl z-[70] sheet-hidden transition-transform duration-300 flex flex-col max-h-[85%] shadow-2xl">
-            <!-- Pull Handle -->
+        <!-- Detail panel -->
+        <div id="sheet-backdrop" class="absolute inset-0 bg-slate-900/55 z-[90] backdrop-hidden transition-opacity duration-300" onclick="closeDetail()"></div>
+        <section id="detail-sheet" class="absolute bottom-0 left-0 right-0 bg-white rounded-t-[32px] z-[100] sheet-hidden transition-transform duration-300 flex flex-col max-h-[84%] shadow-2xl">
             <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mt-4 mb-3"></div>
-            
-            <!-- Dynamic Content Area -->
-            <div class="px-5 pb-8 overflow-y-auto mockup-scroll" id="sheet-dynamic-content">
-                
-                <!-- CONTENT 1: ПЕРЕВОДЫ -->
-                <div id="bs-transfer" class="hidden">
-                    <h3 class="font-bold text-xl text-slate-800 mb-4">Переводы</h3>
-                    <div class="space-y-2">
-                        <div class="flex items-center gap-4 p-3 hover:bg-slate-50 rounded-xl cursor-pointer transition">
-                            <div class="w-10 h-10 rounded-full bg-otpLightBlue flex items-center justify-center text-otpLavender text-lg">📱</div>
-                            <div class="flex-1 border-b border-slate-100 pb-3">
-                                <div class="font-bold text-sm text-slate-800">По номеру телефона (СБП)</div>
-                                <div class="text-[11px] text-slate-500">В любой банк без комиссии</div>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-4 p-3 hover:bg-slate-50 rounded-xl cursor-pointer transition">
-                            <div class="w-10 h-10 rounded-full bg-otpLightBlue flex items-center justify-center text-otpLavender text-lg">💳</div>
-                            <div class="flex-1 border-b border-slate-100 pb-3">
-                                <div class="font-bold text-sm text-slate-800">По номеру карты</div>
-                                <div class="text-[11px] text-slate-500">На карту РФ или за рубеж</div>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-4 p-3 hover:bg-slate-50 rounded-xl cursor-pointer transition">
-                            <div class="w-10 h-10 rounded-full bg-otpLightBlue flex items-center justify-center text-otpLavender text-lg">👤</div>
-                            <div class="flex-1 border-b border-slate-100 pb-3">
-                                <div class="font-bold text-sm text-slate-800">Между своими счетами</div>
-                                <div class="text-[11px] text-slate-500">Например, на накопительный</div>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-4 p-3 hover:bg-slate-50 rounded-xl cursor-pointer transition">
-                            <div class="w-10 h-10 rounded-full bg-otpLightBlue flex items-center justify-center text-otpLavender text-lg">🏦</div>
-                            <div class="flex-1 pb-1">
-                                <div class="font-bold text-sm text-slate-800">По реквизитам</div>
-                                <div class="text-[11px] text-slate-500">Организации или ИП</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div id="detail-content" class="px-5 pb-8 overflow-y-auto mockup-scroll"></div>
+        </section>
 
-                <!-- CONTENT 2: ОПЛАТИТЬ -->
-                <div id="bs-pay" class="hidden">
-                    <h3 class="font-bold text-xl text-slate-800 mb-4">Оплатить услуги</h3>
-                    <div class="space-y-2">
-                        <div class="flex items-center gap-4 p-3 hover:bg-slate-50 rounded-xl cursor-pointer transition">
-                            <div class="w-10 h-10 rounded-full bg-otpLightBlue flex items-center justify-center text-otpLavender text-lg">📞</div>
-                            <div class="flex-1 border-b border-slate-100 pb-3">
-                                <div class="font-bold text-sm text-slate-800">Мобильная связь</div>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-4 p-3 hover:bg-slate-50 rounded-xl cursor-pointer transition">
-                            <div class="w-10 h-10 rounded-full bg-otpOrange/10 flex items-center justify-center text-otpOrange text-lg relative">
-                                🏠
-                                <div class="absolute -top-1 -right-1 w-3 h-3 bg-otpGreen rounded-full border-2 border-white"></div>
-                            </div>
-                            <div class="flex-1 border-b border-slate-100 pb-3">
-                                <div class="font-bold text-sm text-slate-800">ЖКХ</div>
-                                <div class="text-[11px] font-medium text-otpOrange">Без комиссии</div>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-4 p-3 hover:bg-slate-50 rounded-xl cursor-pointer transition">
-                            <div class="w-10 h-10 rounded-full bg-otpLightBlue flex items-center justify-center text-otpLavender text-lg">🌐</div>
-                            <div class="flex-1 border-b border-slate-100 pb-3">
-                                <div class="font-bold text-sm text-slate-800">Интернет и ТВ</div>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-4 p-3 hover:bg-slate-50 rounded-xl cursor-pointer transition">
-                            <div class="w-10 h-10 rounded-full bg-otpLightBlue flex items-center justify-center text-otpLavender text-lg">🚗</div>
-                            <div class="flex-1 pb-1">
-                                <div class="font-bold text-sm text-slate-800">Штрафы и налоги</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <!-- Toast -->
+        <div id="app-toast" class="absolute left-1/2 -translate-x-1/2 bottom-24 z-[115] px-4 py-3 bg-slate-900 text-white text-[13px] font-medium rounded-2xl shadow-lg opacity-0 pointer-events-none transition-all duration-300 max-w-[80%] text-center"></div>
 
-                <!-- CONTENT 3: СБП (QR) -->
-                <div id="bs-qr" class="hidden text-center">
-                    <h3 class="font-bold text-xl text-slate-800 mb-2">Оплата по QR</h3>
-                    <p class="text-xs text-slate-500 mb-6">Наведите камеру на QR-код для быстрой оплаты через СБП</p>
-                    <div class="w-48 h-48 mx-auto bg-slate-100 rounded-2xl border-2 border-dashed border-otpLavender flex items-center justify-center mb-6 relative">
-                        <div class="absolute inset-4 border-2 border-otpLightBlue opacity-50"></div>
-                        <div class="text-4xl animate-pulse">📷</div>
-                    </div>
-                    <button class="w-full py-3 bg-slate-100 hover:bg-slate-200 rounded-xl text-sm font-bold text-slate-800 transition">Показать мой QR-код</button>
-                </div>
-
-                <!-- CONTENT 4: ИСТОРИЯ -->
-                <div id="bs-history" class="hidden">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="font-bold text-xl text-slate-800">История операций</h3>
-                        <span class="text-otpOrange text-xs font-bold cursor-pointer">Поиск</span>
-                    </div>
-                    <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Сегодня</div>
-                    <div class="space-y-4">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-lg">🛒</div>
-                            <div class="flex-1">
-                                <div class="font-bold text-sm text-slate-800">Пятерочка</div>
-                                <div class="text-[10px] text-slate-500">Супермаркеты</div>
-                            </div>
-                            <div class="font-bold text-sm text-slate-800">- 845 ₽</div>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-otpLightBlue text-otpLavender flex items-center justify-center text-lg font-bold">И</div>
-                            <div class="flex-1">
-                                <div class="font-bold text-sm text-slate-800">Ивану С.</div>
-                                <div class="text-[10px] text-slate-500">Перевод по СБП</div>
-                            </div>
-                            <div class="font-bold text-sm text-slate-800">- 1 500 ₽</div>
-                        </div>
-                    </div>
-                    <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 mt-4">Вчера</div>
-                    <div class="space-y-4">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-lg">💼</div>
-                            <div class="flex-1">
-                                <div class="font-bold text-sm text-slate-800">Пополнение</div>
-                                <div class="text-[10px] text-slate-500">Зарплата</div>
-                            </div>
-                            <div class="font-bold text-sm text-green-600">+ 85 000 ₽</div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-        <!-- Bottom Navigation Bar -->
-        <div class="absolute bottom-0 w-full h-[88px] bg-white border-t border-slate-100 flex justify-center items-start pt-3 pb-8 z-50">
-            <!-- Главная -->
-            <button onclick="switchAppTab('main')" id="nav-main" class="flex flex-col items-center gap-1.5 w-1/2 text-otpOrange transition-colors">
+        <!-- Bottom nav -->
+        <div class="absolute bottom-0 w-full h-[88px] bg-white border-t border-slate-100 flex justify-center items-start pt-3 pb-8 z-[70]">
+            <button onclick="setTab('home')" id="nav-home" class="flex flex-col items-center gap-1.5 w-1/2 text-otpOrange transition-colors">
                 <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 3L4 9v12h5v-7h6v7h5V9z"/></svg>
                 <span class="text-[11px] font-bold tracking-wide">Главная</span>
             </button>
-            <!-- Витрина -->
-            <button onclick="switchAppTab('showcase')" id="nav-showcase" class="flex flex-col items-center gap-1.5 w-1/2 text-otpDarkBlue hover:text-slate-600 transition-colors">
+            <button onclick="setTab('showcase')" id="nav-showcase" class="flex flex-col items-center gap-1.5 w-1/2 text-otpDarkBlue transition-colors">
                 <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg>
                 <span class="text-[11px] font-bold tracking-wide">Витрина</span>
             </button>
         </div>
-        
-        <!-- Home Indicator -->
-        <div class="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-32 h-1.5 bg-slate-900 rounded-full z-50"></div>
+
+        <!-- Home indicator -->
+        <div class="absolute bottom-2 left-1/2 -translate-x-1/2 w-32 h-1.5 bg-slate-900 rounded-full z-[75]"></div>
     </div>
 </div>
 
 <script>
-    // --- 1. Главная навигация (Табы) ---
-    function switchAppTab(tabName) {
-        const screenMain = document.getElementById('screen-main');
-        const screenShowcase = document.getElementById('screen-showcase');
-        const navMain = document.getElementById('nav-main');
-        const navShowcase = document.getElementById('nav-showcase');
+/* =========================
+   Mock data
+========================= */
+const appData = {"user": {"name": "Александр", "avatar": "А", "totalFunds": 142500, "cashback": 1250, "mainCardId": "card-owned-main", "homePromoRule": "utilities", "behaviors": {"utilityPayer": true, "freeCash": 130000, "usesCardOften": true, "hasActiveLoan": true, "hasInvestments": false}}, "cards": [{"id": "card-premium", "name": "OTP Premium", "type": "Дебетовая / зарплатная", "network": "МИР", "last4": "4512", "balance": 12500, "numberMasked": "5432 10•• •••• 4512", "numberFull": "5432 1098 7654 4512", "account": "40817 810 5 0000 1234567", "holder": "Александр Петров", "status": "Основная карта", "cashbackInfo": "+5% на категории месяца", "expiry": "09/28", "cvc": "823"}, {"id": "card-virtual", "name": "Виртуальная карта", "type": "Для онлайн-покупок", "network": "МИР", "last4": "8841", "balance": 0, "status": "Онлайн-платежи", "cashbackInfo": "Безопасная оплата в интернете"}], "savings": {"account": {"id": "saving-account", "name": "Накопительный счет", "balance": 130000, "rate": "12,5%", "interestDate": "1 апреля"}, "deposit": {"id": "saving-deposit", "name": "Вклад «Стабильный доход»", "balance": 200000, "rate": "14,2%", "maturityDate": "18 сентября", "autorenewal": true}}, "loans": {"active": {"id": "loan-active", "name": "Кредит на любые цели", "amountLeft": 248000, "nextPayment": 12840, "dueDate": "25 марта", "rate": "16,9%", "termLeft": "22 месяца"}}, "investments": {"hasPortfolio": false, "rates": [{"code": "USD", "buy": "89,40", "sell": "91,10"}, {"code": "EUR", "buy": "97,80", "sell": "99,50"}, {"code": "CNY", "buy": "12,20", "sell": "12,80"}], "news": ["Облигации федерального займа сохраняют спрос у консервативных инвесторов", "Индекс МосБиржи торгуется нейтрально на фоне ожидания корпоративной отчетности", "Курс рубля стабилен, спрос на валютные инструменты умеренный"]}, "spendingCategories": [{"id": "food", "title": "Еда", "amount": 18450, "limit": 25000, "icon": "🍽️"}, {"id": "transport", "title": "Транспорт", "amount": 6200, "limit": 10000, "icon": "🚕"}, {"id": "fun", "title": "Развлечения", "amount": 9150, "limit": 12000, "icon": "🎬"}, {"id": "home", "title": "Дом", "amount": 14700, "limit": 20000, "icon": "🏠"}, {"id": "other", "title": "Прочее", "amount": 10140, "limit": 15000, "icon": "🧩"}], "recentOperations": [{"title": "Пятерочка", "category": "Супермаркеты", "amount": -845, "dateLabel": "Сегодня", "icon": "🛒"}, {"title": "Ивану С.", "category": "Перевод по СБП", "amount": -1500, "dateLabel": "Сегодня", "icon": "💸"}, {"title": "Мосэнергосбыт", "category": "ЖКХ", "amount": -4920, "dateLabel": "Вчера", "icon": "🏠"}, {"title": "Зарплата", "category": "Пополнение", "amount": 85000, "dateLabel": "Вчера", "icon": "💼"}, {"title": "Яндекс Go", "category": "Транспорт", "amount": -620, "dateLabel": "12 марта", "icon": "🚕"}, {"title": "Аптека", "category": "Здоровье", "amount": -1260, "dateLabel": "11 марта", "icon": "💊"}], "frequentSearches": ["СБП", "Реквизиты карты", "Оплата ЖКХ", "Открыть вклад", "Погасить кредит", "История операций"], "recentSearches": ["коммуналка", "лимиты", "вклад", "кэшбэк"]};
+const itemCatalog = {"support-center": {"id": "support-center", "title": "Поддержка", "subtitle": "Чат, звонок и ответы по частым вопросам", "icon": "💬", "tone": "orange", "category": null, "section": "support", "kind": "service", "searchGroup": "service", "path": "Сервисы → Поддержка", "aliases": ["чат", "поддержка", "помощь", "оператор"], "description": "Свяжитесь с банком удобным способом: в чате, по телефону или через быстрые ответы.", "facts": [["Чат", "24/7"], ["Звонок", "Быстрое соединение"], ["Ответы", "По картам и платежам"]], "fields": [], "primaryLabel": "Открыть чат", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Чат поддержки открыт", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "card-owned-main": {"id": "card-owned-main", "title": "OTP Premium", "subtitle": "Дебетовая / зарплатная •••• 4512", "icon": "💳", "tone": "violet", "category": "cards", "section": "owned", "kind": "owned", "searchGroup": "product", "path": "Карты → Мои карты", "aliases": ["карта", "баланс карты", "otp premium", "дебетовая карта"], "description": "Основная карта для зарплаты, переводов и ежедневных покупок.", "facts": [["Баланс", "12 500 ₽"], ["Счёт", "40817…4567"], ["Кэшбэк", "+5% на категории месяца"]], "fields": [], "primaryLabel": "Реквизиты", "primaryTarget": "card-details", "secondaryLabel": "История", "secondaryTarget": "card-history", "success": "", "amount": "12 500 ₽", "meta": "МИР • основная карта", "badges": ["Кэшбэк", "Зарплата"], "customView": "", "badge": ""}, "card-owned-virtual": {"id": "card-owned-virtual", "title": "Виртуальная карта", "subtitle": "Для онлайн-покупок •••• 8841", "icon": "🛡️", "tone": "blue", "category": "cards", "section": "owned", "kind": "owned", "searchGroup": "product", "path": "Карты → Мои карты", "aliases": ["виртуальная карта", "онлайн покупки"], "description": "Отдельная карта для подписок и безопасных платежей в интернете.", "facts": [["Баланс", "0 ₽"], ["Формат", "Выпуск за минуту"], ["Защита", "Для интернет-платежей"]], "fields": [], "primaryLabel": "Пополнить", "primaryTarget": "card-top-up", "secondaryLabel": "Лимиты", "secondaryTarget": "card-limits", "success": "", "amount": "0 ₽", "meta": "МИР • онлайн-платежи", "badges": ["Онлайн", "Безопасно"], "customView": "", "badge": ""}, "card-details": {"id": "card-details", "title": "Реквизиты", "subtitle": "Карта, счёт и данные для перевода", "icon": "🧾", "tone": "blue", "category": "cards", "section": "manage", "kind": "action", "searchGroup": "quick", "path": "Карты → Реквизиты", "aliases": ["реквизиты", "номер карты", "номер счета", "реквизиты карты", "счет карты"], "description": "Посмотрите номер карты, счёт и реквизиты для переводов и пополнения.", "facts": [["Карта", "5432 10•• •••• 4512"], ["Счёт", "40817 810 5 0000 1234567"], ["Владелец", "Александр Петров"]], "fields": ["Карта OTP Premium", "Скопировать реквизиты", "Поделиться"], "primaryLabel": "Скопировать", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Реквизиты скопированы", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "card-top-up": {"id": "card-top-up", "title": "Пополнить", "subtitle": "С другого банка или по реквизитам", "icon": "➕", "tone": "lime", "category": "cards", "section": "cash", "kind": "action", "searchGroup": "quick", "path": "Карты → Пополнение и снятие", "aliases": ["пополнить карту", "пополнение", "зачисление"], "description": "Выберите удобный способ пополнения карты или счёта.", "facts": [["Способы", "Карта другого банка / реквизиты"], ["Скорость", "Мгновенно или в течение дня"]], "fields": [], "primaryLabel": "С другого банка", "primaryTarget": "card-topup-other-bank", "secondaryLabel": "По реквизитам", "secondaryTarget": "card-topup-details", "success": "", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "card-limits": {"id": "card-limits", "title": "Лимиты", "subtitle": "Покупки, переводы и снятие наличных", "icon": "⚙️", "tone": "orange", "category": "cards", "section": "manage", "kind": "action", "searchGroup": "service", "path": "Карты → Лимиты", "aliases": ["лимиты", "лимит карты", "ограничения по карте"], "description": "Настройте дневные и месячные лимиты по карте для покупок, переводов и снятия наличных.", "facts": [["Покупки", "до 300 000 ₽/день"], ["Переводы", "до 150 000 ₽/день"], ["Наличные", "до 100 000 ₽/день"]], "fields": ["Покупки", "Переводы", "Наличные"], "primaryLabel": "Изменить лимиты", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Лимиты сохранены", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "card-cashback": {"id": "card-cashback", "title": "Кэшбэк и бонусы", "subtitle": "Категории месяца и начисления", "icon": "✨", "tone": "lime", "category": "cards", "section": "manage", "kind": "action", "searchGroup": "service", "path": "Карты → Кэшбэк и бонусы", "aliases": ["кэшбэк", "бонусы", "кешбек"], "description": "Проверьте активные категории месяца и историю начислений по карте.", "facts": [["За месяц", "1 250 ₽"], ["Лучшие категории", "АЗС, рестораны, ЖКХ"], ["Следующее начисление", "1 апреля"]], "fields": [], "primaryLabel": "Подключить категорию", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Категория месяца обновлена", "amount": "", "meta": "", "badges": [], "customView": "cashback", "badge": ""}, "card-freeze": {"id": "card-freeze", "title": "Блокировка карты", "subtitle": "Временно заморозить или перевыпустить", "icon": "🧊", "tone": "orange", "category": "cards", "section": "manage", "kind": "action", "searchGroup": "service", "path": "Карты → Блокировка карты", "aliases": ["заблокировать карту", "заморозка карты", "потерял карту"], "description": "Временно заморозьте карту, если потеряли её, или закажите перевыпуск.", "facts": [["Режим", "Временная блокировка"], ["Перевыпуск", "Можно заказать сразу"]], "fields": [], "primaryLabel": "Заморозить карту", "primaryTarget": "", "secondaryLabel": "Перевыпустить", "secondaryTarget": "open-debit-card", "success": "Карта временно заморожена", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "card-pin": {"id": "card-pin", "title": "Сменить PIN", "subtitle": "Обновите код карты за минуту", "icon": "🔐", "tone": "slate", "category": "cards", "section": "manage", "kind": "action", "searchGroup": "service", "path": "Карты → Сменить PIN", "aliases": ["pin", "пин", "сменить пин"], "description": "Задайте новый PIN-код для физической карты. Новый код начнёт действовать сразу.", "facts": [], "fields": ["Текущий PIN", "Новый PIN", "Повторить PIN"], "primaryLabel": "Сохранить PIN", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "PIN-код обновлен", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "card-history": {"id": "card-history", "title": "История операций", "subtitle": "Покупки, переводы и пополнения", "icon": "🧾", "tone": "violet", "category": "cards", "section": "manage", "kind": "action", "searchGroup": "service", "path": "Карты → История операций", "aliases": ["история карты", "операции по карте", "выписка"], "description": "Покажем последние операции по карте и быстрый переход к повтору платежа.", "facts": [], "fields": [], "primaryLabel": "Фильтр", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Фильтр по карте открыт", "amount": "", "meta": "", "badges": [], "customView": "history", "badge": ""}, "card-topup-other-bank": {"id": "card-topup-other-bank", "title": "Пополнить с карты другого банка", "subtitle": "Быстрое зачисление на вашу карту", "icon": "🏦", "tone": "blue", "category": "cards", "section": "cash", "kind": "action", "searchGroup": "quick", "path": "Карты → Пополнение и снятие", "aliases": ["пополнить с другого банка", "пополнение с карты", "стянуть деньги"], "description": "Пополните карту OTP с карты любого российского банка.", "facts": [["Комиссия", "0 ₽"], ["Срок", "Мгновенно"]], "fields": ["Карта списания", "Карта зачисления", "Сумма"], "primaryLabel": "Пополнить", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Черновик пополнения создан", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "card-cash-withdraw": {"id": "card-cash-withdraw", "title": "Снять наличные", "subtitle": "Лимиты и подсказки по снятию", "icon": "💵", "tone": "lime", "category": "cards", "section": "cash", "kind": "action", "searchGroup": "quick", "path": "Карты → Пополнение и снятие", "aliases": ["снять наличные", "наличные", "банкомат снять"], "description": "Узнайте лимиты на снятие и найдите удобный банкомат поблизости.", "facts": [["Лимит сегодня", "100 000 ₽"], ["Комиссия", "По тарифу карты"]], "fields": [], "primaryLabel": "Найти банкомат", "primaryTarget": "card-atm-map", "secondaryLabel": "Реквизиты для пополнения", "secondaryTarget": "card-topup-details", "success": "", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "card-atm-map": {"id": "card-atm-map", "title": "Банкоматы и отделения", "subtitle": "Ближайшие точки для наличных и консультаций", "icon": "📍", "tone": "orange", "category": "cards", "section": "cash", "kind": "action", "searchGroup": "service", "path": "Карты → Банкоматы и отделения", "aliases": ["банкоматы", "отделения", "адрес банка", "где снять наличные"], "description": "Подберём ближайший банкомат для снятия наличных и отделение для обслуживания.", "facts": [], "fields": [], "primaryLabel": "Построить маршрут", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Маршрут до банкомата построен", "amount": "", "meta": "", "badges": [], "customView": "atms", "badge": ""}, "card-topup-details": {"id": "card-topup-details", "title": "Реквизиты для пополнения", "subtitle": "Счёт и данные для зачисления", "icon": "📨", "tone": "blue", "category": "cards", "section": "cash", "kind": "action", "searchGroup": "service", "path": "Карты → Реквизиты для пополнения", "aliases": ["реквизиты для пополнения", "как пополнить карту", "счет для пополнения"], "description": "Используйте реквизиты счёта для перевода из другого банка.", "facts": [["Счёт", "40817 810 5 0000 1234567"], ["БИК", "044525555"], ["Получатель", "Александр Петров"]], "fields": [], "primaryLabel": "Скопировать счёт", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Реквизиты для пополнения скопированы", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "open-debit-card": {"id": "open-debit-card", "title": "Дебетовая карта", "subtitle": "Оформление новой карты с кэшбэком", "icon": "🪪", "tone": "lime", "category": "cards", "section": "open", "kind": "product", "searchGroup": "product", "path": "Карты → Оформить карту", "aliases": ["оформить карту", "дебетовая карта", "новая карта"], "description": "Оформите дебетовую карту с бесплатным обслуживанием и кэшбэком.", "facts": [["Обслуживание", "0 ₽"], ["Выпуск", "За пару минут"], ["Доставка", "Можно заказать"]], "fields": ["Тип карты", "Доставка / офис", "Имя на карте"], "primaryLabel": "Оформить карту", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Форма заявки на дебетовую карту открыта", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "open-virtual-card": {"id": "open-virtual-card", "title": "Виртуальная карта", "subtitle": "Мгновенный выпуск для онлайн-оплаты", "icon": "🌐", "tone": "blue", "category": "cards", "section": "open", "kind": "product", "searchGroup": "product", "path": "Карты → Оформить карту", "aliases": ["виртуальная карта оформить", "выпустить виртуальную карту"], "description": "Виртуальная карта выпускается сразу и подходит для безопасных платежей в интернете.", "facts": [["Выпуск", "Мгновенно"], ["Стоимость", "0 ₽"]], "fields": [], "primaryLabel": "Выпустить", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Виртуальная карта выпущена", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "open-credit-card": {"id": "open-credit-card", "title": "Кредитная карта", "subtitle": "Льготный период и запас денег", "icon": "🟧", "tone": "orange", "category": "cards", "section": "open", "kind": "product", "searchGroup": "product", "path": "Карты → Оформить карту", "aliases": ["кредитная карта", "оформить кредитку"], "description": "Оформите кредитную карту с льготным периодом и понятным лимитом.", "facts": [["Льготный период", "До 120 дней"], ["Обслуживание", "от 0 ₽"]], "fields": [], "primaryLabel": "Подать заявку", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Заявка на кредитную карту открыта", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "transfer-sbp": {"id": "transfer-sbp", "title": "По номеру телефона / СБП", "subtitle": "Перевод в любой банк без лишних шагов", "icon": "📱", "tone": "violet", "category": "payments", "section": "transfer", "kind": "action", "searchGroup": "quick", "path": "Оплата и переводы → Перевести", "aliases": ["сбп", "по номеру телефона", "перевод по телефону", "быстрый платеж"], "description": "Переводите деньги по номеру телефона через СБП.", "facts": [["Комиссия", "0 ₽ до лимита"], ["Срок", "Мгновенно"]], "fields": ["Счёт списания", "Номер телефона", "Сумма"], "primaryLabel": "Перевести", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Черновик перевода по СБП открыт", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "transfer-between": {"id": "transfer-between", "title": "Между своими счетами", "subtitle": "На карту, накопительный или вклад", "icon": "🔁", "tone": "blue", "category": "payments", "section": "transfer", "kind": "action", "searchGroup": "quick", "path": "Оплата и переводы → Перевести", "aliases": ["между своими счетами", "между счетами", "на накопительный"], "description": "Переводите деньги между своими продуктами внутри OTP.", "facts": [["Срок", "Мгновенно"]], "fields": ["Откуда", "Куда", "Сумма"], "primaryLabel": "Перевести", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Перевод между своими счетами подготовлен", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "transfer-requisites": {"id": "transfer-requisites", "title": "В другой банк по реквизитам", "subtitle": "Перевод организации или человеку", "icon": "🏦", "tone": "orange", "category": "payments", "section": "transfer", "kind": "action", "searchGroup": "quick", "path": "Оплата и переводы → Перевести", "aliases": ["по реквизитам", "в другой банк", "перевод организации", "реквизиты"], "description": "Перевод по номеру счёта, БИК и данным получателя.", "facts": [], "fields": ["Получатель", "Счёт", "БИК", "Сумма"], "primaryLabel": "Заполнить перевод", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Форма перевода по реквизитам открыта", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "transfer-card2card": {"id": "transfer-card2card", "title": "С карты на карту", "subtitle": "Перевод по номеру карты", "icon": "💳", "tone": "slate", "category": "payments", "section": "transfer", "kind": "action", "searchGroup": "quick", "path": "Оплата и переводы → Перевести", "aliases": ["с карты на карту", "по номеру карты"], "description": "Переведите деньги по номеру карты в другой банк.", "facts": [], "fields": ["Карта отправителя", "Номер карты получателя", "Сумма"], "primaryLabel": "Продолжить", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Черновик перевода с карты на карту открыт", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "transfer-request": {"id": "transfer-request", "title": "Запросить деньги / Получить перевод", "subtitle": "Поделитесь ссылкой на перевод", "icon": "🫶", "tone": "lime", "category": "payments", "section": "transfer", "kind": "action", "searchGroup": "service", "path": "Оплата и переводы → Перевести", "aliases": ["запросить деньги", "получить перевод", "запрос на перевод"], "description": "Создайте запрос на перевод и отправьте ссылку человеку.", "facts": [], "fields": ["Кому отправить", "Сумма", "Комментарий"], "primaryLabel": "Создать запрос", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Запрос на перевод создан", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "pay-housing": {"id": "pay-housing", "title": "ЖКХ", "subtitle": "Коммуналка без комиссии сегодня", "icon": "🏠", "tone": "orange", "category": "payments", "section": "pay", "kind": "action", "searchGroup": "quick", "path": "Оплата и переводы → Оплатить", "aliases": ["жкх", "коммуналка", "коммунальные услуги", "квартплата"], "description": "Оплатите коммунальные услуги по лицевому счёту или QR-коду.", "facts": [["Комиссия", "0 ₽"], ["Источник", "Карта OTP Premium"]], "fields": ["Поставщик", "Лицевой счёт", "Сумма"], "primaryLabel": "Оплатить", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Форма оплаты ЖКХ открыта", "amount": "", "meta": "", "badges": [], "customView": "", "badge": "Без комиссии"}, "pay-mobile": {"id": "pay-mobile", "title": "Мобильная связь", "subtitle": "Пополнение телефона за пару касаний", "icon": "📞", "tone": "blue", "category": "payments", "section": "pay", "kind": "action", "searchGroup": "quick", "path": "Оплата и переводы → Оплатить", "aliases": ["телефон", "пополнить телефон", "мобильная связь"], "description": "Пополните баланс своего номера или номера близкого человека.", "facts": [], "fields": ["Номер телефона", "Сумма"], "primaryLabel": "Пополнить", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Пополнение телефона подготовлено", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "pay-fines": {"id": "pay-fines", "title": "Штрафы", "subtitle": "ГИБДД и другие начисления", "icon": "🚗", "tone": "slate", "category": "payments", "section": "pay", "kind": "action", "searchGroup": "quick", "path": "Оплата и переводы → Оплатить", "aliases": ["штрафы", "гибдд"], "description": "Проверьте и оплатите найденные штрафы.", "facts": [], "fields": ["Номер СТС / УИН"], "primaryLabel": "Проверить штрафы", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Поиск штрафов запущен", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "pay-taxes": {"id": "pay-taxes", "title": "Налоги", "subtitle": "Оплата по УИН или начислениям", "icon": "🧮", "tone": "orange", "category": "payments", "section": "pay", "kind": "action", "searchGroup": "quick", "path": "Оплата и переводы → Оплатить", "aliases": ["налоги", "фнс", "уин налог"], "description": "Оплатите налог по УИН или действующему начислению.", "facts": [], "fields": ["УИН", "Сумма"], "primaryLabel": "Проверить начисление", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Форма оплаты налога открыта", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "pay-qr": {"id": "pay-qr", "title": "По QR-коду", "subtitle": "Оплата камерой через СБП", "icon": "🔳", "tone": "violet", "category": "payments", "section": "pay", "kind": "action", "searchGroup": "quick", "path": "Оплата и переводы → Оплатить", "aliases": ["qr", "кьюар", "оплата по qr", "qr-код"], "description": "Отсканируйте QR-код и оплатите покупку или услугу.", "facts": [], "fields": [], "primaryLabel": "Открыть камеру", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Камера для QR-оплаты открыта", "amount": "", "meta": "", "badges": [], "customView": "qr", "badge": ""}, "pay-services": {"id": "pay-services", "title": "Прочие услуги", "subtitle": "Интернет, ТВ, обучение и другое", "icon": "🧩", "tone": "blue", "category": "payments", "section": "pay", "kind": "action", "searchGroup": "service", "path": "Оплата и переводы → Оплатить", "aliases": ["прочие услуги", "интернет и тв"], "description": "Оплатите интернет, телевидение, обучение и другие услуги.", "facts": [], "fields": [], "primaryLabel": "Найти поставщика", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Каталог услуг открыт", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "pay-autopay": {"id": "pay-autopay", "title": "Автоплатежи", "subtitle": "Регулярные списания по правилам", "icon": "🌀", "tone": "lime", "category": "payments", "section": "regular", "kind": "action", "searchGroup": "service", "path": "Оплата и переводы → Регулярные операции", "aliases": ["автоплатеж", "автоплатежи"], "description": "Настройте регулярную оплату коммуналки, телефона или кредита.", "facts": [["Активно", "2 правила"], ["Ближайший", "25 марта"]], "fields": [], "primaryLabel": "Настроить автоплатеж", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Мастер автоплатежа открыт", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "pay-templates": {"id": "pay-templates", "title": "Шаблоны", "subtitle": "Сохранённые получатели и суммы", "icon": "📂", "tone": "slate", "category": "payments", "section": "regular", "kind": "action", "searchGroup": "service", "path": "Оплата и переводы → Регулярные операции", "aliases": ["шаблоны", "сохраненные платежи"], "description": "Сохраняйте частые переводы и платежи как шаблоны.", "facts": [], "fields": [], "primaryLabel": "Создать шаблон", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Новый шаблон добавлен", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "pay-repeat": {"id": "pay-repeat", "title": "Повторить операцию", "subtitle": "Быстро запустить прошлый платёж", "icon": "🔁", "tone": "blue", "category": "payments", "section": "regular", "kind": "action", "searchGroup": "service", "path": "Оплата и переводы → Регулярные операции", "aliases": ["повторить", "повтор платежа"], "description": "Найдите прошлую операцию и повторите её без ввода реквизитов.", "facts": [], "fields": [], "primaryLabel": "Выбрать операцию", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Список операций для повтора открыт", "amount": "", "meta": "", "badges": [], "customView": "repeat", "badge": ""}, "pay-mandatory": {"id": "pay-mandatory", "title": "Обязательные платежи / напоминания", "subtitle": "Не забыть про счета и платежи", "icon": "⏰", "tone": "orange", "category": "payments", "section": "regular", "kind": "action", "searchGroup": "service", "path": "Оплата и переводы → Регулярные операции", "aliases": ["обязательные платежи", "напоминания"], "description": "Соберите важные счета в одном месте и получайте напоминания.", "facts": [], "fields": [], "primaryLabel": "Подключить напоминание", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Напоминание сохранено", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "receive-card-any": {"id": "receive-card-any", "title": "Принять платеж с любой карты", "subtitle": "Получайте деньги от клиентов и друзей", "icon": "🧲", "tone": "lime", "category": "payments", "section": "receive", "kind": "action", "searchGroup": "quick", "path": "Оплата и переводы → Получить деньги", "aliases": ["принять платеж", "получить деньги с карты"], "description": "Отправьте ссылку на оплату и получите перевод с любой карты.", "facts": [], "fields": ["Сумма", "Комментарий"], "primaryLabel": "Создать ссылку", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Ссылка на получение платежа создана", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "receive-share-details": {"id": "receive-share-details", "title": "Поделиться реквизитами", "subtitle": "Отправьте карту или счёт человеку", "icon": "📤", "tone": "blue", "category": "payments", "section": "receive", "kind": "action", "searchGroup": "service", "path": "Оплата и переводы → Получить деньги", "aliases": ["поделиться реквизитами", "отправить реквизиты"], "description": "Скопируйте и отправьте реквизиты карты или счёта для перевода.", "facts": [], "fields": [], "primaryLabel": "Открыть реквизиты", "primaryTarget": "card-details", "secondaryLabel": "Создать запрос", "secondaryTarget": "receive-request", "success": "", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "receive-request": {"id": "receive-request", "title": "Создать запрос на перевод", "subtitle": "Запросите конкретную сумму", "icon": "📝", "tone": "violet", "category": "payments", "section": "receive", "kind": "action", "searchGroup": "service", "path": "Оплата и переводы → Получить деньги", "aliases": ["запрос на перевод", "попросить перевести"], "description": "Укажите сумму и отправьте человеку ссылку или QR на оплату.", "facts": [], "fields": ["Сумма", "Кому отправить"], "primaryLabel": "Создать запрос", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Запрос на перевод отправлен", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "savings-owned-account": {"id": "savings-owned-account", "title": "Накопительный счет", "subtitle": "Свободный доступ к деньгам", "icon": "🐖", "tone": "lime", "category": "savings", "section": "owned", "kind": "owned", "searchGroup": "product", "path": "Накопления → Мои накопления", "aliases": ["накопительный счет", "счет для накоплений", "копилка"], "description": "Гибкий счёт для свободных денег с ежедневным начислением процентов.", "facts": [["Баланс", "130 000 ₽"], ["Ставка", "12,5%"], ["Проценты", "1 апреля"]], "fields": [], "primaryLabel": "Пополнить", "primaryTarget": "savings-top-up", "secondaryLabel": "Условия", "secondaryTarget": "savings-terms", "success": "", "amount": "130 000 ₽", "meta": "12,5% • проценты 1 апреля", "badges": ["Гибкий", "Без ограничений"], "customView": "", "badge": ""}, "savings-owned-deposit": {"id": "savings-owned-deposit", "title": "Вклад «Стабильный доход»", "subtitle": "Фиксированная ставка до конца срока", "icon": "🪙", "tone": "orange", "category": "savings", "section": "owned", "kind": "owned", "searchGroup": "product", "path": "Накопления → Мои накопления", "aliases": ["вклад", "мой вклад", "депозит"], "description": "Вклад с фиксированной ставкой и автопродлением.", "facts": [["Баланс", "200 000 ₽"], ["Ставка", "14,2%"], ["Окончание", "18 сентября"]], "fields": [], "primaryLabel": "Пополнить", "primaryTarget": "savings-top-up-deposit", "secondaryLabel": "Автопродление", "secondaryTarget": "savings-autorenewal", "success": "", "amount": "200 000 ₽", "meta": "14,2% • до 18 сентября", "badges": ["Вклад", "Автопродление"], "customView": "", "badge": ""}, "savings-top-up": {"id": "savings-top-up", "title": "Пополнить", "subtitle": "Перевести деньги на накопления", "icon": "➕", "tone": "lime", "category": "savings", "section": "manage", "kind": "action", "searchGroup": "quick", "path": "Накопления → Управление накоплениями", "aliases": ["пополнить вклад", "пополнить накопительный счет", "пополнить накопления"], "description": "Выберите продукт и сумму для пополнения накоплений.", "facts": [], "fields": ["Продукт", "Источник", "Сумма"], "primaryLabel": "Пополнить", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Черновик пополнения накоплений открыт", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "savings-calculator": {"id": "savings-calculator", "title": "Калькулятор вклада", "subtitle": "Оцените доход и срок", "icon": "📐", "tone": "blue", "category": "savings", "section": "calculator", "kind": "action", "searchGroup": "quick", "path": "Накопления → Калькулятор и условия", "aliases": ["калькулятор вклада", "посчитать вклад", "доход по вкладу"], "description": "Посчитайте доход по вкладу и сравните сроки.", "facts": [], "fields": [], "primaryLabel": "Рассчитать", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Расчёт обновлён", "amount": "", "meta": "", "badges": [], "customView": "depositCalculator", "badge": ""}, "savings-open-ruble": {"id": "savings-open-ruble", "title": "Открыть вклад в рублях", "subtitle": "Фиксированная ставка на выбранный срок", "icon": "🏦", "tone": "orange", "category": "savings", "section": "open", "kind": "product", "searchGroup": "product", "path": "Накопления → Открыть новый продукт", "aliases": ["открыть вклад", "вклад в рублях", "оформить вклад"], "description": "Откройте вклад в рублях и выберите подходящий срок.", "facts": [], "fields": ["Сумма", "Срок", "Источник средств"], "primaryLabel": "Открыть вклад", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Форма открытия вклада открыта", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "savings-open-fx": {"id": "savings-open-fx", "title": "Открыть вклад в валюте", "subtitle": "Валютные сбережения для длинной цели", "icon": "💱", "tone": "violet", "category": "savings", "section": "open", "kind": "product", "searchGroup": "product", "path": "Накопления → Открыть новый продукт", "aliases": ["валютный вклад", "вклад в валюте"], "description": "Откройте валютный вклад и сравните доступные условия.", "facts": [], "fields": [], "primaryLabel": "Подобрать вклад", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Подбор валютного вклада открыт", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "savings-open-account": {"id": "savings-open-account", "title": "Открыть накопительный счет", "subtitle": "Гибкий продукт для свободных денег", "icon": "🫙", "tone": "lime", "category": "savings", "section": "open", "kind": "product", "searchGroup": "product", "path": "Накопления → Открыть новый продукт", "aliases": ["открыть накопительный счет", "накопительный счет открыть"], "description": "Создайте накопительный счёт и начните откладывать без ограничений по снятию.", "facts": [], "fields": [], "primaryLabel": "Открыть счет", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Накопительный счет открыт", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "savings-compare": {"id": "savings-compare", "title": "Сравнить сроки и ставки", "subtitle": "Подбор варианта под вашу цель", "icon": "📊", "tone": "blue", "category": "savings", "section": "calculator", "kind": "action", "searchGroup": "service", "path": "Накопления → Калькулятор и условия", "aliases": ["сравнить ставки", "сроки и ставки"], "description": "Сравните доступные сроки и доходность по вкладам и счёту.", "facts": [], "fields": [], "primaryLabel": "Показать варианты", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Сравнение условий открыто", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "savings-terms": {"id": "savings-terms", "title": "Условия по вкладам", "subtitle": "Ставки, сроки и важные правила", "icon": "📘", "tone": "slate", "category": "savings", "section": "calculator", "kind": "action", "searchGroup": "service", "path": "Накопления → Калькулятор и условия", "aliases": ["условия по вкладам", "условия вкладов"], "description": "Кратко собрали ставки, условия досрочного закрытия и пополнения.", "facts": [["Минимальная сумма", "50 000 ₽"], ["Сроки", "от 3 до 24 месяцев"], ["Пополнение", "По тарифу продукта"]], "fields": [], "primaryLabel": "Понятно", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Условия просмотрены", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "savings-top-up-deposit": {"id": "savings-top-up-deposit", "title": "Пополнить вклад", "subtitle": "Добавьте сумму в действующий вклад", "icon": "📥", "tone": "orange", "category": "savings", "section": "manage", "kind": "action", "searchGroup": "service", "path": "Накопления → Управление накоплениями", "aliases": ["пополнить вклад"], "description": "Переведите деньги на действующий вклад, если это допускают условия.", "facts": [], "fields": ["Вклад", "Источник", "Сумма"], "primaryLabel": "Пополнить вклад", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Черновик пополнения вклада создан", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "savings-partial-withdraw": {"id": "savings-partial-withdraw", "title": "Частично снять", "subtitle": "Снимите деньги без закрытия продукта", "icon": "↘️", "tone": "blue", "category": "savings", "section": "manage", "kind": "action", "searchGroup": "service", "path": "Накопления → Управление накоплениями", "aliases": ["частично снять", "снять с вклада", "снять со счета"], "description": "Проверьте, сколько можно снять без потери доходности.", "facts": [], "fields": ["Продукт", "Сумма"], "primaryLabel": "Рассчитать снятие", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Параметры частичного снятия подготовлены", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "savings-autorenewal": {"id": "savings-autorenewal", "title": "Включить автопродление", "subtitle": "Продлить вклад автоматически", "icon": "🔄", "tone": "violet", "category": "savings", "section": "manage", "kind": "action", "searchGroup": "quick", "path": "Накопления → Управление накоплениями", "aliases": ["автопродление", "продлить вклад автоматически"], "description": "Настройте автопродление вклада на новый срок.", "facts": [["Статус", "Сейчас включено"], ["Следующая дата", "18 сентября"]], "fields": [], "primaryLabel": "Изменить статус", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Настройка автопродления сохранена", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "savings-autorenewal-settings": {"id": "savings-autorenewal-settings", "title": "Изменить параметры автопродления", "subtitle": "Срок и режим продления", "icon": "🛠️", "tone": "slate", "category": "savings", "section": "manage", "kind": "action", "searchGroup": "service", "path": "Накопления → Управление накоплениями", "aliases": ["параметры автопродления"], "description": "Укажите срок, сумму и правила продления вклада.", "facts": [], "fields": ["Срок", "Куда перечислять проценты"], "primaryLabel": "Сохранить", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Параметры автопродления обновлены", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "loan-owned-active": {"id": "loan-owned-active", "title": "Кредит на любые цели", "subtitle": "Активный кредит", "icon": "🤝", "tone": "orange", "category": "loans", "section": "owned", "kind": "owned", "searchGroup": "product", "path": "Кредиты → Мои кредиты", "aliases": ["мой кредит", "текущий кредит", "остаток долга"], "description": "Ваш действующий потребительский кредит: остаток, платёж и срок.", "facts": [["Остаток долга", "248 000 ₽"], ["Следующий платёж", "12 840 ₽"], ["Дата платежа", "25 марта"]], "fields": [], "primaryLabel": "Оплатить", "primaryTarget": "loan-pay", "secondaryLabel": "Досрочно", "secondaryTarget": "loan-early", "success": "", "amount": "248 000 ₽", "meta": "Платёж 12 840 ₽ • 25 марта", "badges": ["16,9%", "22 месяца"], "customView": "", "badge": ""}, "loan-pay": {"id": "loan-pay", "title": "Внести ежемесячный платеж", "subtitle": "Оплатить кредит без лишних шагов", "icon": "💳", "tone": "orange", "category": "loans", "section": "manage", "kind": "action", "searchGroup": "quick", "path": "Кредиты → Управление кредитом", "aliases": ["оплатить кредит", "ежемесячный платеж", "погасить кредит"], "description": "Погасите ежемесячный платёж по кредиту с карты или счёта OTP.", "facts": [["К оплате", "12 840 ₽"], ["Срок", "до 25 марта"]], "fields": ["Счёт списания", "Сумма платежа"], "primaryLabel": "Оплатить", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Платёж по кредиту подготовлен", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "loan-schedule": {"id": "loan-schedule", "title": "График платежей", "subtitle": "Ближайшие платежи и остаток", "icon": "📅", "tone": "blue", "category": "loans", "section": "manage", "kind": "action", "searchGroup": "quick", "path": "Кредиты → Управление кредитом", "aliases": ["график платежей", "календарь кредита"], "description": "Посмотрите график предстоящих платежей по кредиту.", "facts": [], "fields": [], "primaryLabel": "Открыть график", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "График платежей открыт", "amount": "", "meta": "", "badges": [], "customView": "loanSchedule", "badge": ""}, "loan-early": {"id": "loan-early", "title": "Досрочно", "subtitle": "Частично или полностью погасить кредит", "icon": "⚡", "tone": "lime", "category": "loans", "section": "manage", "kind": "action", "searchGroup": "quick", "path": "Кредиты → Управление кредитом", "aliases": ["досрочное погашение", "погасить досрочно"], "description": "Выберите формат досрочного погашения по кредиту.", "facts": [], "fields": [], "primaryLabel": "Частично досрочно", "primaryTarget": "loan-early-partial", "secondaryLabel": "Полностью досрочно", "secondaryTarget": "loan-early-full", "success": "", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "loan-pick": {"id": "loan-pick", "title": "Подобрать кредит", "subtitle": "Подсказать подходящий вариант", "icon": "🧭", "tone": "violet", "category": "loans", "section": "borrow", "kind": "action", "searchGroup": "quick", "path": "Кредиты → Взять деньги", "aliases": ["подобрать кредит", "взять кредит"], "description": "Поможем выбрать кредит под вашу цель и сумму.", "facts": [], "fields": [], "primaryLabel": "Потребительский кредит", "primaryTarget": "loan-consumer", "secondaryLabel": "Автокредит", "secondaryTarget": "loan-auto", "success": "", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "loan-consumer": {"id": "loan-consumer", "title": "Потребительский кредит", "subtitle": "Деньги на любые цели", "icon": "💸", "tone": "orange", "category": "loans", "section": "borrow", "kind": "product", "searchGroup": "product", "path": "Кредиты → Взять деньги", "aliases": ["потребительский кредит", "кредит наличными"], "description": "Подайте заявку на потребительский кредит прямо из приложения.", "facts": [["Сумма", "до 3 000 000 ₽"], ["Решение", "от 1 минуты"]], "fields": ["Сумма", "Срок"], "primaryLabel": "Подать заявку", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Заявка на потребительский кредит открыта", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "loan-auto": {"id": "loan-auto", "title": "Автокредит", "subtitle": "Финансирование на покупку автомобиля", "icon": "🚘", "tone": "blue", "category": "loans", "section": "borrow", "kind": "product", "searchGroup": "product", "path": "Кредиты → Взять деньги", "aliases": ["автокредит", "кредит на машину"], "description": "Выберите параметры автокредита и начните оформление.", "facts": [], "fields": [], "primaryLabel": "Подать заявку", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Заявка на автокредит открыта", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "loan-credit-card": {"id": "loan-credit-card", "title": "Кредитная карта", "subtitle": "Резерв денег в карточном формате", "icon": "🟧", "tone": "violet", "category": "loans", "section": "borrow", "kind": "product", "searchGroup": "product", "path": "Кредиты → Взять деньги", "aliases": ["кредитная карта", "заявка на кредитку"], "description": "Получите кредитный лимит и льготный период для покупок.", "facts": [], "fields": [], "primaryLabel": "Подать заявку", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Заявка на кредитную карту открыта", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "loan-early-partial": {"id": "loan-early-partial", "title": "Частичное досрочное погашение", "subtitle": "Сократите платёж или срок", "icon": "↘️", "tone": "lime", "category": "loans", "section": "manage", "kind": "action", "searchGroup": "service", "path": "Кредиты → Управление кредитом", "aliases": ["частичное досрочное погашение", "частично погасить кредит"], "description": "Внесите сумму сверх ежемесячного платежа и выберите, что уменьшить.", "facts": [], "fields": ["Сумма досрочного погашения", "Уменьшить срок / платёж"], "primaryLabel": "Продолжить", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Черновик частичного досрочного погашения создан", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "loan-early-full": {"id": "loan-early-full", "title": "Полное досрочное погашение", "subtitle": "Закрыть кредит полностью", "icon": "✅", "tone": "orange", "category": "loans", "section": "manage", "kind": "action", "searchGroup": "service", "path": "Кредиты → Управление кредитом", "aliases": ["полное досрочное погашение", "закрыть кредит"], "description": "Рассчитайте сумму полного досрочного погашения и закройте кредит.", "facts": [["К погашению", "248 000 ₽"], ["Актуально до", "конца дня"]], "fields": [], "primaryLabel": "Рассчитать сумму", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Расчёт полного досрочного погашения открыт", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "loan-requisites": {"id": "loan-requisites", "title": "Реквизиты для оплаты кредита", "subtitle": "Счёт для перевода из другого банка", "icon": "🧾", "tone": "slate", "category": "loans", "section": "info", "kind": "action", "searchGroup": "service", "path": "Кредиты → Информация и реквизиты", "aliases": ["реквизиты для оплаты кредита", "счет кредита"], "description": "Используйте реквизиты для оплаты кредита переводом из другого банка.", "facts": [["Счёт кредита", "45502 810 6 0000 7654321"], ["БИК", "044525555"]], "fields": [], "primaryLabel": "Скопировать", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Реквизиты кредита скопированы", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "loan-terms": {"id": "loan-terms", "title": "Условия продукта", "subtitle": "Ставка, срок и важные параметры", "icon": "📘", "tone": "blue", "category": "loans", "section": "info", "kind": "action", "searchGroup": "service", "path": "Кредиты → Информация и реквизиты", "aliases": ["условия кредита", "ставка кредита"], "description": "Покажем ключевые условия вашего кредита и параметры досрочного погашения.", "facts": [["Ставка", "16,9%"], ["Осталось", "22 месяца"], ["Страховка", "Подключена"]], "fields": [], "primaryLabel": "Понятно", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Условия кредита просмотрены", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "loan-faq": {"id": "loan-faq", "title": "Частые вопросы", "subtitle": "Ответы по ставке, оплате и погашению", "icon": "❓", "tone": "slate", "category": "loans", "section": "info", "kind": "action", "searchGroup": "service", "path": "Кредиты → Информация и реквизиты", "aliases": ["faq кредит", "частые вопросы по кредиту"], "description": "Собрали ответы на популярные вопросы по текущему кредиту.", "facts": [], "fields": [], "primaryLabel": "Открыть ответы", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Список частых вопросов открыт", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "invest-open": {"id": "invest-open", "title": "Открыть брокерский счет", "subtitle": "Старт инвестиций за несколько минут", "icon": "📈", "tone": "violet", "category": "investments", "section": "start", "kind": "product", "searchGroup": "product", "path": "Инвестиции → Начать инвестировать", "aliases": ["открыть брокерский счет", "брокерский счет", "открыть инвест счет"], "description": "Откройте брокерский счёт и начните инвестировать из приложения.", "facts": [["Открытие", "За несколько минут"], ["Порог входа", "от 1 000 ₽"]], "fields": [], "primaryLabel": "Открыть счет", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Заявка на брокерский счет открыта", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "invest-buy": {"id": "invest-buy", "title": "Купить ценные бумаги", "subtitle": "Акции, облигации и фонды", "icon": "🛒", "tone": "lime", "category": "investments", "section": "trade", "kind": "action", "searchGroup": "quick", "path": "Инвестиции → Торговые действия", "aliases": ["купить акции", "купить бумаги", "покупка ценных бумаг"], "description": "Выберите инструмент для покупки и задайте сумму.", "facts": [], "fields": ["Инструмент", "Количество / сумма"], "primaryLabel": "Купить", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Черновик покупки открыт", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "invest-sell": {"id": "invest-sell", "title": "Продать ценные бумаги", "subtitle": "Фиксация результата и вывод", "icon": "📤", "tone": "orange", "category": "investments", "section": "trade", "kind": "action", "searchGroup": "quick", "path": "Инвестиции → Торговые действия", "aliases": ["продать акции", "продажа ценных бумаг"], "description": "Продайте имеющиеся бумаги и зафиксируйте результат.", "facts": [], "fields": ["Инструмент", "Количество"], "primaryLabel": "Продать", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Черновик продажи открыт", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "invest-ready": {"id": "invest-ready", "title": "Готовые инвестиционные продукты", "subtitle": "Подборка решений без сложного выбора", "icon": "📦", "tone": "blue", "category": "investments", "section": "start", "kind": "product", "searchGroup": "product", "path": "Инвестиции → Начать инвестировать", "aliases": ["готовые инвестиционные продукты", "готовые решения"], "description": "Подберите готовую стратегию по уровню риска и горизонту.", "facts": [], "fields": [], "primaryLabel": "Посмотреть подборку", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Подборка инвестиционных продуктов открыта", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "invest-beginner": {"id": "invest-beginner", "title": "Подбор для новичка", "subtitle": "С чего начать без лишней теории", "icon": "🌱", "tone": "lime", "category": "investments", "section": "start", "kind": "product", "searchGroup": "product", "path": "Инвестиции → Начать инвестировать", "aliases": ["новичок инвестиции", "с чего начать инвестировать"], "description": "Простой старт для тех, кто только начинает инвестировать.", "facts": [], "fields": [], "primaryLabel": "Начать с подсказок", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Стартовый сценарий для новичка открыт", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "invest-news": {"id": "invest-news", "title": "Рыночные новости", "subtitle": "Что происходит на рынке прямо сейчас", "icon": "📰", "tone": "slate", "category": "investments", "section": "market", "kind": "action", "searchGroup": "service", "path": "Инвестиции → Рынок и аналитика", "aliases": ["рыночные новости", "новости рынка"], "description": "Короткие новости рынка для быстрого обзора.", "facts": [], "fields": [], "primaryLabel": "Открыть новости", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Лента рыночных новостей открыта", "amount": "", "meta": "", "badges": [], "customView": "investNews", "badge": ""}, "invest-reports": {"id": "invest-reports", "title": "Аналитические отчеты", "subtitle": "Короткие идеи и обзоры", "icon": "📚", "tone": "blue", "category": "investments", "section": "market", "kind": "action", "searchGroup": "service", "path": "Инвестиции → Рынок и аналитика", "aliases": ["аналитические отчеты", "аналитика инвестиций", "отчеты"], "description": "Обзоры по рынку, эмитентам и основным темам.", "facts": [], "fields": [], "primaryLabel": "Открыть отчеты", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Раздел аналитических отчетов открыт", "amount": "", "meta": "", "badges": [], "customView": "reports", "badge": ""}, "invest-currency": {"id": "invest-currency", "title": "Валютные курсы", "subtitle": "Актуальные курсы для обмена и ориентира", "icon": "💱", "tone": "orange", "category": "investments", "section": "market", "kind": "action", "searchGroup": "quick", "path": "Инвестиции → Рынок и аналитика", "aliases": ["валютные курсы", "курс валют", "доллар", "евро"], "description": "Следите за курсами валют и используйте их как ориентир.", "facts": [], "fields": [], "primaryLabel": "Открыть курсы", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Курсы валют открыты", "amount": "", "meta": "", "badges": [], "customView": "currency", "badge": ""}, "invest-calendar": {"id": "invest-calendar", "title": "Инвестиционный календарь", "subtitle": "Важные даты и события", "icon": "🗓️", "tone": "violet", "category": "investments", "section": "market", "kind": "action", "searchGroup": "quick", "path": "Инвестиции → Рынок и аналитика", "aliases": ["инвестиционный календарь", "календарь инвестора"], "description": "Следите за датами дивидендов, выплат купонов и отчётности.", "facts": [], "fields": [], "primaryLabel": "Открыть календарь", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Инвестиционный календарь открыт", "amount": "", "meta": "", "badges": [], "customView": "calendar", "badge": ""}, "invest-watchlist": {"id": "invest-watchlist", "title": "Избранное / наблюдение", "subtitle": "Следите за интересующими бумагами", "icon": "👀", "tone": "slate", "category": "investments", "section": "trade", "kind": "action", "searchGroup": "service", "path": "Инвестиции → Торговые действия", "aliases": ["избранное", "наблюдение", "watchlist"], "description": "Добавляйте бумаги в наблюдение и отслеживайте их цену.", "facts": [], "fields": [], "primaryLabel": "Добавить бумагу", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Список наблюдения открыт", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "spend-history": {"id": "spend-history", "title": "История операций", "subtitle": "Все покупки, переводы и пополнения", "icon": "🧾", "tone": "violet", "category": "spending", "section": "history", "kind": "action", "searchGroup": "quick", "path": "Расходы и бюджет → История операций", "aliases": ["история операций", "траты", "все операции", "выписка"], "description": "Покажем все операции и дадим быстрый переход к фильтрам.", "facts": [], "fields": [], "primaryLabel": "Открыть историю", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "История операций открыта", "amount": "", "meta": "", "badges": [], "customView": "history", "badge": ""}, "spend-filter-card": {"id": "spend-filter-card", "title": "Фильтр по карте", "subtitle": "Посмотреть операции по конкретной карте", "icon": "💳", "tone": "blue", "category": "spending", "section": "history", "kind": "action", "searchGroup": "service", "path": "Расходы и бюджет → История операций", "aliases": ["фильтр по карте", "операции по карте"], "description": "Отберите операции по конкретной карте или счёту.", "facts": [], "fields": [], "primaryLabel": "Выбрать карту", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Фильтр по карте открыт", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "spend-filter-date": {"id": "spend-filter-date", "title": "Фильтр по дате", "subtitle": "Период, который вас интересует", "icon": "📅", "tone": "orange", "category": "spending", "section": "history", "kind": "action", "searchGroup": "service", "path": "Расходы и бюджет → История операций", "aliases": ["фильтр по дате", "период операций"], "description": "Отберите операции за нужный период: день, неделю, месяц или свой диапазон.", "facts": [], "fields": [], "primaryLabel": "Выбрать период", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Фильтр по дате открыт", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "spend-search-op": {"id": "spend-search-op", "title": "Поиск по операции", "subtitle": "Найти магазин, перевод или услугу", "icon": "🔎", "tone": "slate", "category": "spending", "section": "history", "kind": "action", "searchGroup": "service", "path": "Расходы и бюджет → История операций", "aliases": ["поиск по операции", "найти операцию", "поиск траты"], "description": "Ищите по названию магазина, сумме или комментарию.", "facts": [], "fields": [], "primaryLabel": "Открыть поиск", "primaryTarget": "search:Пятерочка", "secondaryLabel": "", "secondaryTarget": "", "success": "", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "spend-categories": {"id": "spend-categories", "title": "Категории трат", "subtitle": "Автоматически разложенные расходы по категориям", "icon": "🥧", "tone": "lime", "category": "spending", "section": "categories", "kind": "action", "searchGroup": "quick", "path": "Расходы и бюджет → Категории трат", "aliases": ["категории трат", "категории расходов", "раскладка по категориям"], "description": "Траты автоматически распределяются по категориям, чтобы было проще видеть картину.", "facts": [], "fields": [], "primaryLabel": "Открыть категории", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Раздел категорий трат открыт", "amount": "", "meta": "", "badges": [], "customView": "spendingCategories", "badge": ""}, "spend-cat-food": {"id": "spend-cat-food", "title": "Еда", "subtitle": "Покупки в супермаркетах и кафе", "icon": "🍽️", "tone": "orange", "category": "spending", "section": "categories", "kind": "action", "searchGroup": "service", "path": "Расходы и бюджет → Категории трат", "aliases": ["еда"], "description": "Посмотрите расходы на еду и сравните с лимитом.", "facts": [], "fields": [], "primaryLabel": "Открыть категорию", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Категория «Еда» открыта", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "spend-cat-transport": {"id": "spend-cat-transport", "title": "Транспорт", "subtitle": "Такси, метро, бензин", "icon": "🚕", "tone": "blue", "category": "spending", "section": "categories", "kind": "action", "searchGroup": "service", "path": "Расходы и бюджет → Категории трат", "aliases": ["транспорт"], "description": "Расходы на транспорт и поездки.", "facts": [], "fields": [], "primaryLabel": "Открыть категорию", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Категория «Транспорт» открыта", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "spend-cat-entertainment": {"id": "spend-cat-entertainment", "title": "Развлечения", "subtitle": "Кино, подписки, досуг", "icon": "🎬", "tone": "violet", "category": "spending", "section": "categories", "kind": "action", "searchGroup": "service", "path": "Расходы и бюджет → Категории трат", "aliases": ["развлечения"], "description": "Посмотрите расходы на развлечения и досуг.", "facts": [], "fields": [], "primaryLabel": "Открыть категорию", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Категория «Развлечения» открыта", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "spend-cat-home": {"id": "spend-cat-home", "title": "Дом", "subtitle": "Коммуналка, ремонт, маркетплейсы для дома", "icon": "🏠", "tone": "lime", "category": "spending", "section": "categories", "kind": "action", "searchGroup": "service", "path": "Расходы и бюджет → Категории трат", "aliases": ["дом"], "description": "Посмотрите расходы по категории «Дом».", "facts": [], "fields": [], "primaryLabel": "Открыть категорию", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Категория «Дом» открыта", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "spend-cat-other": {"id": "spend-cat-other", "title": "Прочее", "subtitle": "Остальные расходы вне крупных категорий", "icon": "🧩", "tone": "slate", "category": "spending", "section": "categories", "kind": "action", "searchGroup": "service", "path": "Расходы и бюджет → Категории трат", "aliases": ["прочее"], "description": "Небольшие расходы, которые не попали в основные категории.", "facts": [], "fields": [], "primaryLabel": "Открыть категорию", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Категория «Прочее» открыта", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "spend-limits": {"id": "spend-limits", "title": "Лимиты по категориям", "subtitle": "Сколько можно потратить в месяц", "icon": "🎯", "tone": "orange", "category": "spending", "section": "control", "kind": "action", "searchGroup": "quick", "path": "Расходы и бюджет → Контроль бюджета", "aliases": ["лимиты", "лимиты по категориям", "лимит трат"], "description": "Настройте лимиты по категориям и следите за прогрессом.", "facts": [], "fields": [], "primaryLabel": "Изменить лимиты", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Лимиты по категориям обновлены", "amount": "", "meta": "", "badges": [], "customView": "limits", "badge": ""}, "spend-month-budget": {"id": "spend-month-budget", "title": "Месячный бюджет", "subtitle": "Общий бюджет на месяц", "icon": "📦", "tone": "blue", "category": "spending", "section": "control", "kind": "action", "searchGroup": "service", "path": "Расходы и бюджет → Контроль бюджета", "aliases": ["месячный бюджет", "бюджет на месяц"], "description": "Установите общий бюджет на месяц и следите за остатком.", "facts": [["Бюджет", "90 000 ₽"], ["Потрачено", "58 640 ₽"]], "fields": [], "primaryLabel": "Изменить бюджет", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Месячный бюджет сохранен", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "spend-overspend-alert": {"id": "spend-overspend-alert", "title": "Предупреждения о перерасходе", "subtitle": "Сигнал заранее, если выходите за рамки", "icon": "🚨", "tone": "lime", "category": "spending", "section": "control", "kind": "action", "searchGroup": "service", "path": "Расходы и бюджет → Контроль бюджета", "aliases": ["перерасход", "предупреждения о перерасходе"], "description": "Получайте предупреждения, если траты выходят за лимит.", "facts": [], "fields": [], "primaryLabel": "Включить предупреждения", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Предупреждения о перерасходе включены", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "spend-reports": {"id": "spend-reports", "title": "Отчеты по тратам", "subtitle": "Короткие сводки по месяцам и категориям", "icon": "📊", "tone": "violet", "category": "spending", "section": "reports", "kind": "action", "searchGroup": "service", "path": "Расходы и бюджет → Отчеты и уведомления", "aliases": ["отчеты по тратам", "отчет расходов"], "description": "Сводки по месяцам, категориям и динамике расходов.", "facts": [], "fields": [], "primaryLabel": "Открыть отчеты", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Отчеты по тратам открыты", "amount": "", "meta": "", "badges": [], "customView": "reports", "badge": ""}, "spend-notifications": {"id": "spend-notifications", "title": "Уведомления о транзакциях", "subtitle": "Push и статусы по операциям", "icon": "🔔", "tone": "orange", "category": "spending", "section": "reports", "kind": "action", "searchGroup": "quick", "path": "Расходы и бюджет → Отчеты и уведомления", "aliases": ["уведомления о транзакциях", "уведомления", "push"], "description": "Настройте уведомления по покупкам, переводам и пополнениям.", "facts": [], "fields": [], "primaryLabel": "Настроить уведомления", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Настройки уведомлений сохранены", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}, "spend-dynamics": {"id": "spend-dynamics", "title": "Динамика расходов", "subtitle": "Как меняются траты по месяцам", "icon": "📉", "tone": "blue", "category": "spending", "section": "reports", "kind": "action", "searchGroup": "service", "path": "Расходы и бюджет → Отчеты и уведомления", "aliases": ["динамика расходов", "расходы по месяцам"], "description": "Покажем, как менялись ваши траты по месяцам и где есть рост.", "facts": [], "fields": [], "primaryLabel": "Открыть динамику", "primaryTarget": "", "secondaryLabel": "", "secondaryTarget": "", "success": "Динамика расходов открыта", "amount": "", "meta": "", "badges": [], "customView": "", "badge": ""}};
+const categoryDefinitions = {"cards": {"title": "Карты", "subtitle": "Баланс, реквизиты, лимиты", "icon": "💳", "tone": "violet", "quickActions": ["card-details", "card-top-up", "card-limits", "card-cashback"], "sections": [{"id": "owned", "title": "Мои карты", "type": "owned", "items": ["card-owned-main", "card-owned-virtual"]}, {"id": "manage", "title": "Управление картой", "type": "grid", "items": ["card-details", "card-limits", "card-cashback", "card-freeze", "card-pin", "card-history"]}, {"id": "cash", "title": "Пополнение и снятие", "type": "grid", "items": ["card-topup-other-bank", "card-cash-withdraw", "card-atm-map", "card-topup-details"]}, {"id": "open", "title": "Оформить карту", "type": "grid", "items": ["open-debit-card", "open-virtual-card", "open-credit-card"]}], "promo": {"eyebrow": "Вам может подойти", "title": "Проверьте категории месяца и заберите больше кэшбэка", "itemId": "card-cashback", "cta": "Открыть"}}, "payments": {"title": "Оплата и переводы", "subtitle": "СБП, QR, ЖКХ, шаблоны", "icon": "🔄", "tone": "orange", "quickActions": ["transfer-sbp", "pay-housing", "pay-qr", "pay-autopay"], "sections": [{"id": "transfer", "title": "Перевести", "type": "grid", "items": ["transfer-sbp", "transfer-between", "transfer-requisites", "transfer-card2card", "transfer-request"]}, {"id": "pay", "title": "Оплатить", "type": "grid", "items": ["pay-housing", "pay-mobile", "pay-fines", "pay-taxes", "pay-qr", "pay-services"]}, {"id": "regular", "title": "Регулярные операции", "type": "grid", "items": ["pay-autopay", "pay-templates", "pay-repeat", "pay-mandatory"]}, {"id": "receive", "title": "Получить деньги", "type": "grid", "items": ["receive-card-any", "receive-share-details", "receive-request"]}], "promo": {"eyebrow": "Персонально", "title": "Погасите коммуналку без комиссии сегодня", "itemId": "pay-housing", "cta": "Оплатить"}}, "savings": {"title": "Накопления", "subtitle": "Вклад, счет, калькулятор", "icon": "💰", "tone": "lime", "quickActions": ["savings-top-up", "savings-calculator", "savings-open-ruble", "savings-autorenewal"], "sections": [{"id": "owned", "title": "Мои накопления", "type": "owned", "items": ["savings-owned-account", "savings-owned-deposit"]}, {"id": "open", "title": "Открыть новый продукт", "type": "grid", "items": ["savings-open-ruble", "savings-open-fx", "savings-open-account"]}, {"id": "calculator", "title": "Калькулятор и условия", "type": "grid", "items": ["savings-calculator", "savings-compare", "savings-terms"]}, {"id": "manage", "title": "Управление накоплениями", "type": "grid", "items": ["savings-top-up-deposit", "savings-partial-withdraw", "savings-autorenewal", "savings-autorenewal-settings"]}], "promo": {"eyebrow": "Свободный остаток", "title": "Откройте вклад и зафиксируйте ставку на свободные 130 000 ₽", "itemId": "savings-open-ruble", "cta": "Открыть вклад"}}, "loans": {"title": "Кредиты", "subtitle": "Заявка, платеж, досрочное", "icon": "🤝", "tone": "orange", "quickActions": ["loan-pay", "loan-schedule", "loan-early", "loan-pick"], "sections": [{"id": "owned", "title": "Мои кредиты", "type": "owned", "items": ["loan-owned-active"]}, {"id": "borrow", "title": "Взять деньги", "type": "grid", "items": ["loan-consumer", "loan-auto", "loan-credit-card"]}, {"id": "manage", "title": "Управление кредитом", "type": "grid", "items": ["loan-schedule", "loan-pay", "loan-early-partial", "loan-early-full"]}, {"id": "info", "title": "Информация и реквизиты", "type": "grid", "items": ["loan-requisites", "loan-terms", "loan-faq"]}], "promo": {"eyebrow": "Ближайшее действие", "title": "Следующий платеж по кредиту — 25 марта", "itemId": "loan-pay", "cta": "Оплатить"}}, "investments": {"title": "Инвестиции", "subtitle": "Брокерский счет, бумаги, курсы", "icon": "📈", "tone": "violet", "quickActions": ["invest-open", "invest-buy", "invest-currency", "invest-calendar"], "sections": [{"id": "portfolio", "title": "Мой портфель", "type": "owned", "items": [], "emptyState": {"icon": "📈", "title": "Пока нет инвестиций", "text": "Начните с брокерского счета и небольшой суммы.", "itemId": "invest-open", "cta": "Открыть счет"}}, {"id": "start", "title": "Начать инвестировать", "type": "grid", "items": ["invest-open", "invest-ready", "invest-beginner"]}, {"id": "market", "title": "Рынок и аналитика", "type": "grid", "items": ["invest-news", "invest-reports", "invest-currency", "invest-calendar"]}, {"id": "trade", "title": "Торговые действия", "type": "grid", "items": ["invest-buy", "invest-sell", "invest-watchlist"]}], "promo": {"eyebrow": "Мягкий старт", "title": "Начните инвестировать с 1 000 ₽ без перегруза", "itemId": "invest-beginner", "cta": "Посмотреть"}}, "spending": {"title": "Расходы и бюджет", "subtitle": "История, категории, лимиты", "icon": "📊", "tone": "blue", "quickActions": ["spend-history", "spend-categories", "spend-limits", "spend-notifications"], "sections": [{"id": "history", "title": "История операций", "type": "grid", "items": ["spend-history", "spend-filter-card", "spend-filter-date", "spend-search-op"]}, {"id": "categories", "title": "Категории трат", "subtitle": "Траты распределяются автоматически", "type": "grid", "items": ["spend-cat-food", "spend-cat-transport", "spend-cat-entertainment", "spend-cat-home", "spend-cat-other"]}, {"id": "control", "title": "Контроль бюджета", "type": "grid", "items": ["spend-limits", "spend-month-budget", "spend-overspend-alert"]}, {"id": "reports", "title": "Отчеты и уведомления", "type": "grid", "items": ["spend-reports", "spend-notifications", "spend-dynamics"]}], "promo": {"eyebrow": "Под контролем", "title": "Поставьте лимит на категорию «Еда», чтобы держать бюджет", "itemId": "spend-limits", "cta": "Настроить"}}};
+const showcaseOrder = ["cards", "payments", "savings", "loans", "spending", "investments"];
+const promoRules = {"home": [{"id": "utilities", "when": "utilityPayer", "itemId": "pay-housing", "title": "Погасите коммуналку без комиссии сегодня", "cta": "Оплатить", "icon": "🏠"}, {"id": "deposit", "when": "freeCash", "itemId": "savings-open-ruble", "title": "Свободные деньги можно зафиксировать на выгодной ставке", "cta": "Открыть вклад", "icon": "💰"}], "showcaseRecommendation": {"when": "utilityPayer", "category": "payments", "label": "Вам может подойти"}};
 
-        closeBottomSheet(); // Закрываем шторку при смене табов
+/* =========================
+   Helpers
+========================= */
+const refs = {
+    home: document.getElementById('screen-home'),
+    showcase: document.getElementById('screen-showcase'),
+    category: document.getElementById('category-screen'),
+    navHome: document.getElementById('nav-home'),
+    navShowcase: document.getElementById('nav-showcase'),
+    searchOverlay: document.getElementById('search-overlay'),
+    searchInput: document.getElementById('search-input'),
+    searchScroll: document.getElementById('search-scroll'),
+    backdrop: document.getElementById('sheet-backdrop'),
+    detailSheet: document.getElementById('detail-sheet'),
+    detailContent: document.getElementById('detail-content'),
+    toast: document.getElementById('app-toast')
+};
 
-        if (tabName === 'main') {
-            screenMain.classList.remove('opacity-0', 'pointer-events-none');
-            screenMain.classList.add('opacity-100', 'z-10');
-            screenShowcase.classList.remove('opacity-100', 'z-10');
-            screenShowcase.classList.add('opacity-0', 'pointer-events-none', 'z-0');
+const toneMap = {
+    violet: { soft: 'bg-otpLavender/10 text-otpLavender', solid: 'bg-otpLavender text-white', border: 'border-otpLavender/20' },
+    orange: { soft: 'bg-otpOrange/10 text-otpOrange', solid: 'bg-otpOrange text-white', border: 'border-otpOrange/20' },
+    lime: { soft: 'bg-otpGreen/35 text-slate-900', solid: 'bg-otpGreen text-slate-900', border: 'border-otpGreen/50' },
+    blue: { soft: 'bg-otpLightBlue text-slate-800', solid: 'bg-otpLightBlue text-slate-900', border: 'border-sky-200' },
+    slate: { soft: 'bg-slate-100 text-slate-700', solid: 'bg-slate-800 text-white', border: 'border-slate-200' }
+};
 
-            navMain.classList.replace('text-otpDarkBlue', 'text-otpOrange');
-            navMain.classList.replace('hover:text-slate-600', 'text-otpOrange');
-            navShowcase.classList.replace('text-otpOrange', 'text-otpDarkBlue');
-            navShowcase.classList.add('hover:text-slate-600');
-        } else if (tabName === 'showcase') {
-            screenShowcase.classList.remove('opacity-0', 'pointer-events-none');
-            screenShowcase.classList.add('opacity-100', 'z-10');
-            screenMain.classList.remove('opacity-100', 'z-10');
-            screenMain.classList.add('opacity-0', 'pointer-events-none', 'z-0');
+const state = {
+    tab: 'home',
+    activeCategory: '',
+    focusSection: '',
+    activeDetail: '',
+    searchOpen: false,
+    searchQuery: '',
+    recentSearches: [...appData.recentSearches],
+    recommendedCategory: getRecommendedCategory(),
+    detailTimer: null,
+    toastTimer: null
+};
 
-            navShowcase.classList.replace('text-otpDarkBlue', 'text-otpOrange');
-            navShowcase.classList.replace('hover:text-slate-600', 'text-otpOrange');
-            navMain.classList.replace('text-otpOrange', 'text-otpDarkBlue');
-            navMain.classList.add('hover:text-slate-600');
-        }
+let searchIndex = [];
+
+function formatCurrency(value) {
+    return new Intl.NumberFormat('ru-RU').format(value) + ' ₽';
+}
+function formatSignedAmount(value) {
+    const abs = Math.abs(value);
+    const text = new Intl.NumberFormat('ru-RU').format(abs) + ' ₽';
+    return value >= 0 ? '+ ' + text : '- ' + text;
+}
+function normalize(str) {
+    return String(str || '')
+        .toLowerCase()
+        .replace(/ё/g, 'е')
+        .replace(/[^a-zа-я0-9]+/gi, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+function escapeHtml(str) {
+    return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+}
+function getTone(tone) {
+    return toneMap[tone] || toneMap.slate;
+}
+function showToast(message) {
+    refs.toast.textContent = message;
+    refs.toast.classList.remove('opacity-0', 'pointer-events-none');
+    refs.toast.classList.add('opacity-100');
+    clearTimeout(state.toastTimer);
+    state.toastTimer = setTimeout(() => {
+        refs.toast.classList.remove('opacity-100');
+        refs.toast.classList.add('opacity-0', 'pointer-events-none');
+    }, 1900);
+}
+function copyText(text, successMessage) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).catch(() => {});
     }
-
-    // --- 2. Переворот карты ---
-    function toggleCardFlip() {
-        const card = document.getElementById('bank-card');
-        card.classList.toggle('rotate-y-180');
+    showToast(successMessage || 'Скопировано');
+}
+function getRecommendedCategory() {
+    if (appData.user.behaviors.utilityPayer) return 'payments';
+    if (!appData.investments.hasPortfolio) return 'investments';
+    return 'cards';
+}
+function resolveHomePromo() {
+    const rules = promoRules.home || [];
+    for (const rule of rules) {
+        if (rule.when === 'utilityPayer' && appData.user.behaviors.utilityPayer) return rule;
+        if (rule.when === 'freeCash' && appData.user.behaviors.freeCash > 50000) return rule;
     }
+    return rules[0];
+}
+function sectionTitleWithSubtitle(section) {
+    if (!section.subtitle) return '';
+    return `<div class="text-[11px] text-slate-500 font-medium mt-1">${escapeHtml(section.subtitle)}</div>`;
+}
+function closeAllTransient() {
+    closeSearch();
+    closeDetail();
+}
+function getMainCard() {
+    return appData.cards[0];
+}
+function getSavingsAccount() {
+    return appData.savings.account;
+}
 
-    // --- 3. Под-экраны Витрины (из V3) ---
-    function openSubCategory(catId) {
-        const subScreen = document.getElementById('sub-' + catId);
-        if (subScreen) {
-            subScreen.classList.remove('slide-out');
-            subScreen.classList.add('slide-in');
-        }
-    }
-    function closeSubCategory(catId) {
-        const subScreen = document.getElementById('sub-' + catId);
-        if (subScreen) {
-            subScreen.classList.remove('slide-in');
-            subScreen.classList.add('slide-out');
-        }
-    }
+/* =========================
+   Render Home
+========================= */
+function renderHome() {
+    const card = getMainCard();
+    const savings = getSavingsAccount();
+    const promo = resolveHomePromo();
 
-    // --- 4. Логика Bottom Sheet (Всплывающая шторка) ---
-    function openBottomSheet(type) {
-        const sheet = document.getElementById('bottom-sheet');
-        const backdrop = document.getElementById('sheet-backdrop');
-        
-        // Скрываем все варианты контента внутри шторки
-        const contents = ['transfer', 'pay', 'qr', 'history'];
-        contents.forEach(id => {
-            document.getElementById('bs-' + id).classList.add('hidden');
+    refs.home.innerHTML = `
+        <div class="px-5 pt-3 flex justify-between items-center mb-5">
+            <div class="flex items-center gap-3">
+                <div class="w-11 h-11 rounded-full bg-otpLightBlue flex items-center justify-center font-bold text-otpLavender text-lg border-2 border-white shadow-sm">${escapeHtml(appData.user.avatar)}</div>
+                <div>
+                    <div class="text-xs text-otpDarkBlue font-medium">Добрый день,</div>
+                    <div class="font-bold text-slate-800 text-lg">${escapeHtml(appData.user.name)}</div>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <button class="w-10 h-10 bg-white rounded-full shadow-sm border border-slate-100 flex items-center justify-center text-lg text-otpDarkBlue" onclick="openSearch()">🔍</button>
+                <button class="w-10 h-10 bg-white rounded-full shadow-sm border border-slate-100 flex items-center justify-center text-lg text-otpOrange" onclick="openDetail('support-center')">💬</button>
+            </div>
+        </div>
+
+        <div class="px-5 mb-5 flex gap-3 items-end justify-between">
+            <div>
+                <div class="text-sm text-otpDarkBlue font-medium mb-1">Всего средств</div>
+                <div class="text-3xl font-bold text-slate-800 tracking-tight">${formatCurrency(appData.user.totalFunds)}</div>
+            </div>
+            <button class="bg-otpGreen rounded-2xl p-3 shadow-sm text-center min-w-[96px]" onclick="openDetail('card-cashback')">
+                <div class="text-[10px] font-bold text-slate-800 uppercase tracking-wider mb-0.5">Кэшбэк</div>
+                <div class="text-sm font-bold text-slate-900">${formatCurrency(appData.user.cashback)}</div>
+            </button>
+        </div>
+
+        <div class="px-5 mb-4 perspective-1000">
+            <div id="bank-card" class="relative w-full h-52 rounded-[28px] cursor-pointer transform-style-3d flip-transition shadow-lg" onclick="toggleCardFlip()">
+                <div class="absolute inset-0 w-full h-full bg-gradient-to-br from-otpLavender to-[#8a5ab0] rounded-[28px] p-5 text-white backface-hidden flex flex-col justify-between">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <div class="font-semibold tracking-wider text-sm opacity-90">${escapeHtml(card.name)}</div>
+                            <div class="text-xs opacity-80 mt-1">${escapeHtml(card.status)}</div>
+                        </div>
+                        <div class="font-bold italic">${escapeHtml(card.network)}</div>
+                    </div>
+                    <div>
+                        <div class="text-xs opacity-80 mb-1 font-medium">${escapeHtml(card.type)} •••• ${escapeHtml(card.last4)}</div>
+                        <div class="text-3xl font-bold">${formatCurrency(card.balance)}</div>
+                    </div>
+                    <div class="text-[10px] text-center w-full bg-black/10 rounded-xl py-2 mt-2 font-medium backdrop-blur-sm">Нажмите для реквизитов</div>
+                </div>
+                <div class="absolute inset-0 w-full h-full bg-slate-900 rounded-[28px] p-5 text-white backface-hidden rotate-y-180 flex flex-col justify-between">
+                    <div>
+                        <div class="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-1">Номер карты</div>
+                        <div class="font-mono text-sm tracking-[0.2em] border-b border-slate-700 pb-2 mb-3">${escapeHtml(card.numberMasked)}</div>
+                        <div class="grid grid-cols-2 gap-3 mb-3">
+                            <div>
+                                <div class="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-1">Счет</div>
+                                <div class="text-xs font-mono">${escapeHtml(card.account)}</div>
+                            </div>
+                            <div>
+                                <div class="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-1">Владелец</div>
+                                <div class="text-xs">${escapeHtml(card.holder)}</div>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button class="flex-1 py-2 rounded-xl bg-white/8 text-xs font-semibold" onclick="event.stopPropagation(); copyText('${card.numberFull}', 'Номер карты скопирован')">Скопировать</button>
+                            <button class="flex-1 py-2 rounded-xl bg-white/8 text-xs font-semibold" onclick="event.stopPropagation(); showToast('Ссылка на реквизиты готова')">Поделиться</button>
+                            <button class="flex-1 py-2 rounded-xl bg-otpOrange text-xs font-semibold text-white" onclick="event.stopPropagation(); openDetail('card-top-up')">Пополнить</button>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between text-[11px]">
+                        <span>Срок ${escapeHtml(card.expiry)}</span>
+                        <button class="px-2.5 py-1 rounded-lg bg-white/8" onclick="event.stopPropagation(); revealCvc(this)">${escapeHtml('CVC •••')}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="px-5 mb-6">
+            <div class="bg-white rounded-[28px] p-4 shadow-soft border border-slate-100" onclick="routeAction('savings-owned-account', {openDetail: true})">
+                <div class="flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-2xl bg-otpGreen/35 flex items-center justify-center text-xl">🐖</div>
+                        <div>
+                            <div class="font-bold text-slate-800 text-sm">Накопительный счет</div>
+                            <div class="text-[11px] text-slate-500">Ставка ${escapeHtml(savings.rate)} • проценты ${escapeHtml(savings.interestDate)}</div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="font-bold text-slate-800">${formatCurrency(savings.balance)}</div>
+                        <button class="mt-2 px-3 py-2 rounded-xl bg-slate-100 text-xs font-semibold text-slate-800" onclick="event.stopPropagation(); openDetail('savings-top-up')">Пополнить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="px-5 mb-6">
+            <div class="grid grid-cols-4 gap-3">
+                ${renderHomeQuickButton('💸', 'Перевести', "quickHomeAction('transfer')")}
+                ${renderHomeQuickButton('📱', 'Оплатить', "quickHomeAction('pay')")}
+                ${renderHomeQuickButton('QR', 'СБП', "quickHomeAction('sbp')")}
+                ${renderHomeQuickButton('🧾', 'История', "quickHomeAction('history')")}
+            </div>
+        </div>
+
+        <div class="px-5">
+            <button class="w-full text-left bg-otpOrange rounded-[28px] p-4 relative overflow-hidden shadow-md text-white" onclick="routeAction('${promo.itemId}', {openDetail: true})">
+                <div class="relative z-10 w-3/4">
+                    <div class="text-[10px] font-bold text-white/80 uppercase tracking-wider mb-1">Специально для вас</div>
+                    <h4 class="font-bold text-sm mb-3 leading-snug">${escapeHtml(promo.title)}</h4>
+                    <span class="inline-flex items-center gap-2 bg-white text-otpOrange text-xs px-4 py-2 rounded-xl font-bold shadow-sm">${escapeHtml(promo.cta)} <span>→</span></span>
+                </div>
+                <div class="absolute right-0 bottom-0 text-7xl opacity-20 transform translate-x-2 translate-y-4 pointer-events-none">${escapeHtml(promo.icon)}</div>
+            </button>
+        </div>
+    `;
+}
+function renderHomeQuickButton(icon, label, action) {
+    return `
+        <button class="flex flex-col items-center gap-1.5" onclick="${action}">
+            <div class="w-14 h-14 bg-otpLightBlue rounded-2xl flex items-center justify-center text-xl font-bold text-otpLavender shadow-sm">${icon}</div>
+            <span class="text-[11px] font-semibold text-slate-700">${label}</span>
+        </button>
+    `;
+}
+function toggleCardFlip() {
+    const card = document.getElementById('bank-card');
+    if (card) card.classList.toggle('rotate-y-180');
+}
+function revealCvc(button) {
+    const shown = button.dataset.shown === 'true';
+    button.dataset.shown = shown ? 'false' : 'true';
+    button.textContent = shown ? 'CVC •••' : 'CVC ' + getMainCard().cvc;
+}
+
+/* =========================
+   Render Showcase
+========================= */
+function renderShowcase() {
+    const recommended = state.recommendedCategory;
+    const promo = resolveHomePromo();
+
+    refs.showcase.innerHTML = `
+        <div class="px-5 pt-4 pb-3 sticky top-0 bg-slate-50/95 backdrop-blur-sm z-20 border-b border-slate-100">
+            <h2 class="text-[28px] font-bold text-slate-800 mb-3">Витрина</h2>
+            <button class="w-full bg-white rounded-2xl p-3 flex items-center gap-3 text-slate-500 border border-slate-200 shadow-sm" onclick="openSearch()">
+                <span class="text-lg">🔍</span>
+                <span class="text-sm font-medium text-otpDarkBlue">Найти: перевести, оплатить ЖКХ, открыть вклад…</span>
+            </button>
+        </div>
+
+        <div class="px-5 mt-4">
+            <div class="grid grid-cols-2 gap-3">
+                ${showcaseOrder.map(key => renderShowcaseTile(key, key === recommended)).join('')}
+            </div>
+
+            <div class="mt-5">
+                <div class="text-sm font-bold text-slate-800 mb-3">Часто ищут</div>
+                <div class="flex gap-2 overflow-x-auto mockup-scroll pb-1">
+                    ${appData.frequentSearches.slice(0, 4).map(query => `
+                        <button class="shrink-0 px-4 py-2.5 rounded-full bg-white border border-slate-200 text-[12px] font-semibold text-slate-700" onclick="openSearch('${escapeHtml(query)}')">${escapeHtml(query)}</button>
+                    `).join('')}
+                </div>
+            </div>
+
+            <div class="mt-5 mb-4">
+                <button class="w-full bg-white rounded-[28px] p-4 shadow-soft border border-slate-100 text-left relative overflow-hidden" onclick="routeAction('${promo.itemId}', {openDetail: true})">
+                    <div class="text-[10px] font-bold text-otpOrange uppercase tracking-wider mb-1">${state.recommendedCategory === 'payments' ? 'Подсказка на сегодня' : 'Подборка для вас'}</div>
+                    <div class="font-bold text-slate-800 text-base leading-snug w-4/5">${escapeHtml(promo.title)}</div>
+                    <div class="mt-3 inline-flex items-center gap-2 text-xs font-semibold text-otpOrange">${escapeHtml(promo.cta)} <span>→</span></div>
+                    <div class="absolute right-3 bottom-2 text-5xl opacity-15">${escapeHtml(promo.icon)}</div>
+                </button>
+            </div>
+        </div>
+    `;
+}
+function renderShowcaseTile(key, recommended) {
+    const category = categoryDefinitions[key];
+    const tone = getTone(category.tone || 'slate');
+    return `
+        <button class="relative bg-white rounded-[28px] p-4 border border-slate-200 shadow-soft min-h-[156px] text-left flex flex-col" onclick="openCategory('${key}')">
+            ${recommended ? `<span class="absolute top-3 right-3 text-[10px] font-bold px-2 py-1 rounded-full bg-otpGreen text-slate-900">${escapeHtml((promoRules.showcaseRecommendation || {}).label || 'Вам может подойти')}</span>` : ''}
+            <div class="w-12 h-12 ${tone.soft} rounded-full flex items-center justify-center text-2xl shadow-sm">${escapeHtml(category.icon)}</div>
+            <div class="mt-4 font-bold text-base text-slate-800 leading-tight">${escapeHtml(category.title)}</div>
+            <div class="mt-1 text-[12px] text-slate-500 leading-snug">${escapeHtml(category.subtitle)}</div>
+            <div class="mt-auto pt-4 text-xs font-semibold text-otpOrange">Открыть →</div>
+        </button>
+    `;
+}
+
+/* =========================
+   Category screens
+========================= */
+function openCategory(categoryKey, focusSectionId = '') {
+    state.activeCategory = categoryKey;
+    state.focusSection = focusSectionId || '';
+    renderCategoryScreen();
+    refs.category.classList.remove('translate-x-full');
+    refs.category.classList.add('translate-x-0');
+    setTimeout(() => focusCategorySection(state.focusSection), 380);
+}
+function closeCategory(immediate = false) {
+    state.activeCategory = '';
+    state.focusSection = '';
+    refs.category.classList.remove('translate-x-0');
+    refs.category.classList.add('translate-x-full');
+    if (immediate) refs.category.innerHTML = '';
+}
+function renderCategoryScreen() {
+    const category = categoryDefinitions[state.activeCategory];
+    if (!category) return;
+    refs.category.innerHTML = `
+        <div class="px-5 pt-4 pb-3 sticky top-0 bg-slate-50/95 backdrop-blur-sm z-20 border-b border-slate-200">
+            <div class="flex items-center gap-3">
+                <button class="w-10 h-10 rounded-2xl bg-white border border-slate-200 shadow-sm text-lg text-slate-700" onclick="closeCategory()">←</button>
+                <div class="flex-1">
+                    <div class="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Витрина</div>
+                    <div class="text-xl font-bold text-slate-800">${escapeHtml(category.title)}</div>
+                    <div class="text-[12px] text-slate-500">${escapeHtml(category.subtitle)}</div>
+                </div>
+                <button class="w-10 h-10 rounded-2xl bg-white border border-slate-200 shadow-sm text-lg text-slate-700" onclick="openSearch()">🔍</button>
+            </div>
+        </div>
+
+        <div class="px-5 py-4 space-y-5">
+            <div class="flex gap-2 overflow-x-auto mockup-scroll pb-1">
+                ${category.quickActions.map(id => renderQuickChip(itemCatalog[id])).join('')}
+            </div>
+
+            ${category.sections.map(section => renderCategorySection(section)).join('')}
+
+            ${renderCategoryPromo(category.promo)}
+        </div>
+    `;
+}
+function renderQuickChip(item) {
+    const tone = getTone(item.tone);
+    return `
+        <button class="shrink-0 px-4 py-3 rounded-2xl bg-white border border-slate-200 shadow-sm flex items-center gap-2" onclick="openDetail('${item.id}')">
+            <span class="w-8 h-8 rounded-xl ${tone.soft} flex items-center justify-center text-sm">${escapeHtml(item.icon)}</span>
+            <span class="text-[12px] font-semibold text-slate-800">${escapeHtml(item.title)}</span>
+        </button>
+    `;
+}
+function renderCategorySection(section) {
+    const items = (section.items || []).map(id => itemCatalog[id]).filter(Boolean);
+    return `
+        <section id="section-${escapeHtml(section.id)}" class="space-y-3">
+            <div>
+                <div class="text-lg font-bold text-slate-800">${escapeHtml(section.title)}</div>
+                ${sectionTitleWithSubtitle(section)}
+            </div>
+            ${section.type === 'owned'
+                ? renderOwnedSection(section, items)
+                : `<div class="grid grid-cols-2 gap-3">${items.map(renderGridCard).join('')}</div>`
+            }
+        </section>
+    `;
+}
+function renderOwnedSection(section, items) {
+    if (!items.length && section.emptyState) {
+        return renderEmptyState(section.emptyState);
+    }
+    return `<div class="space-y-3">${items.map(renderOwnedCard).join('')}</div>`;
+}
+function renderOwnedCard(item) {
+    return `
+        <div class="bg-white rounded-[28px] p-4 shadow-soft border border-slate-100">
+            <button class="w-full text-left" onclick="openDetail('${item.id}')">
+                <div class="flex items-start gap-3">
+                    <div class="w-12 h-12 rounded-2xl ${getTone(item.tone).soft} flex items-center justify-center text-xl">${escapeHtml(item.icon)}</div>
+                    <div class="flex-1">
+                        <div class="flex items-start justify-between gap-3">
+                            <div>
+                                <div class="font-bold text-slate-800 text-sm">${escapeHtml(item.title)}</div>
+                                <div class="text-[11px] text-slate-500 mt-1">${escapeHtml(item.subtitle)}</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="font-bold text-slate-800">${escapeHtml(item.amount)}</div>
+                                <div class="text-[11px] text-slate-500 mt-1">${escapeHtml(item.meta)}</div>
+                            </div>
+                        </div>
+                        <div class="flex gap-2 flex-wrap mt-3">
+                            ${(item.badges || []).map(tag => `<span class="px-2.5 py-1 rounded-full bg-slate-100 text-[10px] font-bold text-slate-700">${escapeHtml(tag)}</span>`).join('')}
+                        </div>
+                    </div>
+                </div>
+            </button>
+            <div class="grid grid-cols-2 gap-2 mt-4">
+                <button class="py-3 rounded-2xl bg-slate-100 text-[12px] font-semibold text-slate-800" onclick="handleDirectTarget('${item.primaryTarget || ''}', '${item.success || ''}')">${escapeHtml(item.primaryLabel || 'Подробнее')}</button>
+                <button class="py-3 rounded-2xl bg-white border border-slate-200 text-[12px] font-semibold text-slate-800" onclick="handleDirectTarget('${item.secondaryTarget || ''}', '${item.title} открыто')">${escapeHtml(item.secondaryLabel || 'Подробнее')}</button>
+            </div>
+        </div>
+    `;
+}
+function renderGridCard(item) {
+    const tone = getTone(item.tone);
+    return `
+        <button class="bg-white border border-slate-200 rounded-[24px] p-3 min-h-[138px] text-left shadow-soft flex flex-col" onclick="openDetail('${item.id}')">
+            <div class="w-10 h-10 rounded-2xl ${tone.soft} flex items-center justify-center text-lg">${escapeHtml(item.icon)}</div>
+            <div class="mt-3 font-bold text-sm text-slate-800 leading-snug">${escapeHtml(item.title)}</div>
+            <div class="mt-1 text-[11px] text-slate-500 leading-snug">${escapeHtml(item.subtitle)}</div>
+            <div class="mt-auto pt-3 flex items-center justify-between">
+                <span class="text-[11px] font-semibold text-otpOrange">${escapeHtml(item.badge || 'Открыть')}</span>
+                <span class="text-otpOrange">→</span>
+            </div>
+        </button>
+    `;
+}
+function renderEmptyState(emptyState) {
+    return `
+        <div class="bg-white rounded-[28px] p-5 shadow-soft border border-slate-100">
+            <div class="w-12 h-12 rounded-2xl bg-otpLightBlue flex items-center justify-center text-2xl">${escapeHtml(emptyState.icon)}</div>
+            <div class="mt-4 font-bold text-slate-800">${escapeHtml(emptyState.title)}</div>
+            <div class="mt-1 text-sm text-slate-500 leading-snug">${escapeHtml(emptyState.text)}</div>
+            <button class="mt-4 px-4 py-3 rounded-2xl bg-slate-900 text-white text-sm font-semibold" onclick="openDetail('${emptyState.itemId}')">${escapeHtml(emptyState.cta)}</button>
+        </div>
+    `;
+}
+function renderCategoryPromo(promo) {
+    return `
+        <button class="w-full text-left bg-white rounded-[28px] p-4 border border-slate-200 shadow-soft relative overflow-hidden" onclick="openDetail('${promo.itemId}')">
+            <div class="text-[10px] font-bold uppercase tracking-wider text-otpOrange mb-1">${escapeHtml(promo.eyebrow)}</div>
+            <div class="font-bold text-slate-800 text-base leading-snug w-4/5">${escapeHtml(promo.title)}</div>
+            <div class="mt-3 inline-flex items-center gap-2 text-xs font-semibold text-otpOrange">${escapeHtml(promo.cta)} <span>→</span></div>
+            <div class="absolute -right-2 -bottom-2 w-24 h-24 rounded-full bg-otpLavender/10"></div>
+        </button>
+    `;
+}
+function focusCategorySection(sectionId) {
+    if (!sectionId) return;
+    const element = document.getElementById(`section-${sectionId}`);
+    if (!element) return;
+    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    element.classList.add('focus-pulse');
+    setTimeout(() => element.classList.remove('focus-pulse'), 1900);
+}
+
+/* =========================
+   Search overlay
+========================= */
+function buildSearchIndex() {
+    searchIndex = [];
+    showcaseOrder.forEach(key => {
+        const category = categoryDefinitions[key];
+        searchIndex.push({
+            id: `landing-${key}`,
+            kind: 'landing',
+            category: key,
+            section: '',
+            title: category.title,
+            subtitle: category.subtitle,
+            path: `Витрина → ${category.title}`,
+            aliases: [category.title, category.subtitle],
+            searchGroup: 'product',
+            icon: category.icon,
+            tone: category.tone
         });
+    });
+    Object.values(itemCatalog).forEach(item => {
+        searchIndex.push({
+            ...item,
+            kind: item.kind || 'action'
+        });
+    });
+}
+function openSearch(prefill = '') {
+    closeDetail();
+    state.searchOpen = true;
+    state.searchQuery = prefill || '';
+    refs.searchOverlay.classList.remove('search-hidden');
+    refs.searchOverlay.classList.add('search-visible');
+    renderSearch();
+    setTimeout(() => {
+        refs.searchInput.focus();
+        refs.searchInput.setSelectionRange(refs.searchInput.value.length, refs.searchInput.value.length);
+    }, 60);
+}
+function closeSearch() {
+    state.searchOpen = false;
+    refs.searchOverlay.classList.remove('search-visible');
+    refs.searchOverlay.classList.add('search-hidden');
+}
+function addRecentQuery(query) {
+    const clean = String(query || '').trim();
+    if (!clean) return;
+    state.recentSearches = [clean, ...state.recentSearches.filter(item => normalize(item) !== normalize(clean))].slice(0, 4);
+}
+function searchEntries(query) {
+    const q = normalize(query);
+    if (!q) return [];
+    return searchIndex
+        .map(entry => ({ entry, score: getSearchScore(entry, q) }))
+        .filter(row => row.score > 0)
+        .sort((a, b) => b.score - a.score)
+        .map(row => row.entry)
+        .slice(0, 12);
+}
+function getSearchScore(entry, q) {
+    const title = normalize(entry.title);
+    const subtitle = normalize(entry.subtitle);
+    const path = normalize(entry.path);
+    const aliases = (entry.aliases || []).map(normalize);
+    const hay = [title, subtitle, path, ...aliases].join(' ');
+    const tokens = q.split(' ').filter(Boolean);
+    const allTokensMatch = tokens.every(token => hay.includes(token));
+    if (!hay.includes(q) && !allTokensMatch) return 0;
 
-        // Показываем нужный контент
-        document.getElementById('bs-' + type).classList.remove('hidden');
+    let score = 0;
+    if (title === q) score += 180;
+    if (title.startsWith(q)) score += 120;
+    if (aliases.some(alias => alias === q)) score += 110;
+    if (hay.includes(q)) score += 55;
+    tokens.forEach(token => { if (hay.includes(token)) score += 10; });
+    if (entry.searchGroup === 'quick') score += 8;
+    if (entry.kind === 'landing') score -= 8;
+    return score;
+}
+function renderSearch() {
+    refs.searchInput.value = state.searchQuery;
+    const results = searchEntries(state.searchQuery);
+    const grouped = {
+        quick: results.filter(item => item.searchGroup === 'quick'),
+        product: results.filter(item => item.searchGroup === 'product'),
+        service: results.filter(item => item.searchGroup === 'service')
+    };
 
-        // Показываем оверлей и поднимаем шторку
-        backdrop.classList.remove('backdrop-hidden');
-        backdrop.classList.add('backdrop-visible');
-        
-        sheet.classList.remove('sheet-hidden');
-        sheet.classList.add('sheet-visible');
+    refs.searchScroll.innerHTML = `
+        <div class="space-y-5">
+            <section>
+                <div class="text-sm font-bold text-slate-800 mb-3">Часто ищут</div>
+                <div class="flex flex-wrap gap-2">
+                    ${appData.frequentSearches.map(query => `
+                        <button class="px-4 py-2.5 rounded-full bg-white border border-slate-200 text-[12px] font-semibold text-slate-700" onclick="applySearchQuery('${escapeHtml(query)}', true)">${escapeHtml(query)}</button>
+                    `).join('')}
+                </div>
+            </section>
+
+            <section>
+                <div class="text-sm font-bold text-slate-800 mb-3">Недавние запросы</div>
+                <div class="flex flex-wrap gap-2">
+                    ${state.recentSearches.map(query => `
+                        <button class="px-4 py-2.5 rounded-full bg-slate-100 text-[12px] font-semibold text-slate-700" onclick="applySearchQuery('${escapeHtml(query)}', false)">${escapeHtml(query)}</button>
+                    `).join('')}
+                </div>
+            </section>
+
+            ${state.searchQuery ? renderSearchGroups(grouped) : `
+                <div class="bg-white rounded-[28px] p-5 border border-slate-200 shadow-soft">
+                    <div class="font-bold text-slate-800">Поиск по действию и намерению</div>
+                    <div class="mt-2 text-sm text-slate-500 leading-snug">Например: «коммуналка», «по номеру телефона», «открыть вклад», «погасить кредит» или «траты».</div>
+                </div>
+            `}
+        </div>
+    `;
+}
+function renderSearchGroups(groups) {
+    const groupTitles = {
+        quick: 'Быстрые действия',
+        product: 'Продукты',
+        service: 'Настройки / сервисы'
+    };
+    const sections = Object.entries(groups)
+        .filter(([, items]) => items.length)
+        .map(([key, entries]) => `
+            <section>
+                <div class="text-sm font-bold text-slate-800 mb-3">${groupTitles[key]}</div>
+                <div class="space-y-2">
+                    ${entries.map(renderSearchResult).join('')}
+                </div>
+            </section>
+        `)
+        .join('');
+
+    return sections || `
+        <div class="bg-white rounded-[28px] p-5 border border-slate-200 shadow-soft">
+            <div class="font-bold text-slate-800">Ничего не нашли</div>
+            <div class="mt-2 text-sm text-slate-500">Попробуйте запросы: СБП, коммуналка, лимиты, вклад, кэшбэк.</div>
+        </div>
+    `;
+}
+function renderSearchResult(result) {
+    const tone = getTone(result.tone || 'slate');
+    return `
+        <button class="w-full bg-white rounded-[22px] p-3 border border-slate-200 shadow-soft text-left flex items-start gap-3" onclick="activateSearchResult('${result.id}')">
+            <div class="w-10 h-10 rounded-2xl ${tone.soft} flex items-center justify-center text-lg">${escapeHtml(result.icon || '•')}</div>
+            <div class="flex-1 min-w-0">
+                <div class="font-bold text-sm text-slate-800">${escapeHtml(result.title)}</div>
+                <div class="text-[11px] text-slate-500 mt-1">${escapeHtml(result.subtitle || result.path)}</div>
+                <div class="text-[11px] text-otpOrange mt-2 font-semibold">${escapeHtml(result.path)}</div>
+            </div>
+        </button>
+    `;
+}
+function applySearchQuery(query, addToRecent = false) {
+    state.searchQuery = query;
+    if (addToRecent) addRecentQuery(query);
+    renderSearch();
+}
+function activateSearchResult(id) {
+    const entry = searchIndex.find(item => item.id === id);
+    if (!entry) return;
+    addRecentQuery(state.searchQuery || entry.title);
+    closeSearch();
+    if (entry.kind === 'landing') {
+        setTab('showcase', true);
+        openCategory(entry.category, entry.section || '');
+        return;
     }
-
-    function closeBottomSheet() {
-        const sheet = document.getElementById('bottom-sheet');
-        const backdrop = document.getElementById('sheet-backdrop');
-        
-        // Опускаем шторку и прячем оверлей
-        sheet.classList.remove('sheet-visible');
-        sheet.classList.add('sheet-hidden');
-        
-        backdrop.classList.remove('backdrop-visible');
-        backdrop.classList.add('backdrop-hidden');
+    if (!entry.category) {
+        openDetail(entry.id);
+        return;
     }
+    routeAction(entry.id, { openDetail: true });
+}
+
+/* =========================
+   Detail panels
+========================= */
+function openDetail(id) {
+    const item = itemCatalog[id];
+    if (!item) return;
+    state.activeDetail = id;
+    refs.detailContent.innerHTML = renderDetailContent(item);
+    refs.backdrop.classList.remove('backdrop-hidden');
+    refs.backdrop.classList.add('backdrop-visible');
+    refs.detailSheet.classList.remove('sheet-hidden');
+    refs.detailSheet.classList.add('sheet-visible');
+}
+function closeDetail() {
+    state.activeDetail = '';
+    refs.detailSheet.classList.remove('sheet-visible');
+    refs.detailSheet.classList.add('sheet-hidden');
+    refs.backdrop.classList.remove('backdrop-visible');
+    refs.backdrop.classList.add('backdrop-hidden');
+}
+function handleDetailButton(type) {
+    const item = itemCatalog[state.activeDetail];
+    if (!item) return;
+    const target = type === 'primary' ? item.primaryTarget : item.secondaryTarget;
+    if (target) {
+        executeTarget(target);
+        return;
+    }
+    if (item.success) {
+        showToast(item.success);
+        closeDetail();
+        return;
+    }
+    closeDetail();
+}
+function handleDirectTarget(target, fallbackMessage) {
+    if (target) {
+        executeTarget(target);
+        return;
+    }
+    showToast(fallbackMessage || 'Открыто');
+}
+function executeTarget(target) {
+    if (!target) return;
+    if (target.startsWith('search:')) {
+        closeDetail();
+        openSearch(target.replace('search:', ''));
+        return;
+    }
+    if (itemCatalog[target]) {
+        const targetItem = itemCatalog[target];
+        if (!targetItem.category) {
+            openDetail(target);
+            return;
+        }
+        if (state.activeCategory === targetItem.category) {
+            openDetail(target);
+        } else {
+            closeDetail();
+            setTimeout(() => routeAction(target, { openDetail: true }), 120);
+        }
+        return;
+    }
+    showToast(target);
+}
+function renderDetailContent(item) {
+    const tone = getTone(item.tone);
+    return `
+        <div class="pb-2">
+            <div class="flex items-start justify-between gap-3 mb-4">
+                <div class="flex items-start gap-3">
+                    <div class="w-12 h-12 rounded-2xl ${tone.soft} flex items-center justify-center text-xl">${escapeHtml(item.icon)}</div>
+                    <div>
+                        <div class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">${escapeHtml(item.path || 'Сервис')}</div>
+                        <div class="text-xl font-bold text-slate-800 leading-tight mt-1">${escapeHtml(item.title)}</div>
+                        <div class="text-sm text-slate-500 mt-1">${escapeHtml(item.subtitle || '')}</div>
+                        ${item.amount ? `<div class="mt-2 text-lg font-bold text-slate-800">${escapeHtml(item.amount)}</div>` : ''}
+                    </div>
+                </div>
+                <button class="w-10 h-10 rounded-2xl bg-slate-100 text-slate-700 text-lg" onclick="closeDetail()">✕</button>
+            </div>
+
+            ${item.description ? `<div class="bg-slate-50 rounded-2xl p-4 text-sm text-slate-600 leading-snug mb-4">${escapeHtml(item.description)}</div>` : ''}
+
+            ${renderDetailCustomView(item)}
+            ${renderFacts(item)}
+            ${renderFields(item)}
+
+            <div class="mt-5 space-y-2">
+                <button class="w-full py-3.5 rounded-2xl ${tone.solid} text-sm font-bold" onclick="handleDetailButton('primary')">${escapeHtml(item.primaryLabel || 'Продолжить')}</button>
+                ${item.secondaryLabel ? `<button class="w-full py-3.5 rounded-2xl bg-white border border-slate-200 text-sm font-bold text-slate-800" onclick="handleDetailButton('secondary')">${escapeHtml(item.secondaryLabel)}</button>` : ''}
+            </div>
+        </div>
+    `;
+}
+function renderFacts(item) {
+    if (!item.facts || !item.facts.length) return '';
+    return `
+        <div class="grid grid-cols-2 gap-2 mb-4">
+            ${item.facts.map(([label, value]) => `
+                <div class="bg-white border border-slate-200 rounded-2xl p-3">
+                    <div class="text-[11px] text-slate-400 font-bold uppercase tracking-wider">${escapeHtml(label)}</div>
+                    <div class="text-sm font-semibold text-slate-800 mt-1">${escapeHtml(value)}</div>
+                </div>
+            `).join('')}
+        </div>
+    `;
+}
+function renderFields(item) {
+    if (!item.fields || !item.fields.length) return '';
+    return `
+        <div class="space-y-2 mb-4">
+            ${item.fields.map(field => `
+                <div class="bg-slate-50 rounded-2xl px-4 py-3 border border-slate-200">
+                    <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400">${escapeHtml(field)}</div>
+                    <div class="text-sm text-slate-500 mt-1">Заполнится на следующем шаге</div>
+                </div>
+            `).join('')}
+        </div>
+    `;
+}
+function renderDetailCustomView(item) {
+    switch (item.customView) {
+        case 'cashback':
+            return `
+                <div class="space-y-2 mb-4">
+                    ${[
+                        ['АЗС', '10%', 'Топ-категория месяца'],
+                        ['Рестораны', '7%', 'До конца месяца'],
+                        ['ЖКХ', '5%', 'Для регулярных платежей']
+                    ].map(([name, value, text]) => `
+                        <div class="bg-white border border-slate-200 rounded-2xl p-3 flex items-center justify-between">
+                            <div>
+                                <div class="font-bold text-slate-800">${name}</div>
+                                <div class="text-[11px] text-slate-500 mt-1">${text}</div>
+                            </div>
+                            <div class="text-lg font-bold text-otpOrange">${value}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        case 'history':
+            return renderOperationsList(true);
+        case 'atms':
+            return `
+                <div class="space-y-2 mb-4">
+                    ${[
+                        ['Банкомат OTP', 'ул. Льва Толстого, 16', 'Снятие и пополнение'],
+                        ['Отделение OTP', 'Ленинградский пр-т, 39', 'Консультации и карты'],
+                        ['Партнерский банкомат', 'Тверская, 9', 'Снятие наличных']
+                    ].map(([title, address, text]) => `
+                        <div class="bg-white border border-slate-200 rounded-2xl p-3">
+                            <div class="font-bold text-slate-800">${title}</div>
+                            <div class="text-[12px] text-slate-500 mt-1">${address}</div>
+                            <div class="text-[11px] font-semibold text-otpOrange mt-2">${text}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        case 'qr':
+            return `
+                <div class="mb-4 text-center">
+                    <div class="w-48 h-48 mx-auto bg-slate-100 rounded-[28px] border-2 border-dashed border-otpLavender flex items-center justify-center relative overflow-hidden">
+                        <div class="absolute inset-4 border-2 border-otpLightBlue opacity-60 rounded-[18px]"></div>
+                        <div class="text-5xl">📷</div>
+                    </div>
+                    <div class="text-[12px] text-slate-500 mt-3">Наведите камеру на QR-код для оплаты через СБП.</div>
+                </div>
+            `;
+        case 'depositCalculator':
+            return `
+                <div class="grid grid-cols-3 gap-2 mb-4">
+                    <div class="bg-white border border-slate-200 rounded-2xl p-3">
+                        <div class="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Сумма</div>
+                        <div class="font-bold text-slate-800 mt-1">100 000 ₽</div>
+                    </div>
+                    <div class="bg-white border border-slate-200 rounded-2xl p-3">
+                        <div class="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Срок</div>
+                        <div class="font-bold text-slate-800 mt-1">6 мес.</div>
+                    </div>
+                    <div class="bg-white border border-slate-200 rounded-2xl p-3">
+                        <div class="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Доход</div>
+                        <div class="font-bold text-otpOrange mt-1">7 100 ₽</div>
+                    </div>
+                </div>
+            `;
+        case 'loanSchedule':
+            return `
+                <div class="space-y-2 mb-4">
+                    ${[
+                        ['25 марта', '12 840 ₽', 'Ежемесячный платеж'],
+                        ['25 апреля', '12 840 ₽', 'Ежемесячный платеж'],
+                        ['25 мая', '12 840 ₽', 'Ежемесячный платеж']
+                    ].map(([date, amount, note]) => `
+                        <div class="bg-white border border-slate-200 rounded-2xl p-3 flex items-center justify-between">
+                            <div>
+                                <div class="font-bold text-slate-800">${date}</div>
+                                <div class="text-[11px] text-slate-500 mt-1">${note}</div>
+                            </div>
+                            <div class="font-bold text-slate-800">${amount}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        case 'currency':
+            return `
+                <div class="space-y-2 mb-4">
+                    ${appData.investments.rates.map(rate => `
+                        <div class="bg-white border border-slate-200 rounded-2xl p-3 flex items-center justify-between">
+                            <div class="font-bold text-slate-800">${escapeHtml(rate.code)}</div>
+                            <div class="text-right">
+                                <div class="text-[11px] text-slate-500">Покупка ${escapeHtml(rate.buy)}</div>
+                                <div class="text-[11px] text-slate-500">Продажа ${escapeHtml(rate.sell)}</div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        case 'calendar':
+            return `
+                <div class="space-y-2 mb-4">
+                    ${[
+                        ['18 марта', 'Отчетность крупнейших эмитентов', 'Следите за волатильностью'],
+                        ['22 марта', 'Купонные выплаты по облигациям', 'Доход по фиксированным инструментам'],
+                        ['28 марта', 'Закрытие реестров по дивидендам', 'Проверьте наблюдение']
+                    ].map(([date, title, text]) => `
+                        <div class="bg-white border border-slate-200 rounded-2xl p-3">
+                            <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400">${date}</div>
+                            <div class="font-bold text-slate-800 mt-1">${title}</div>
+                            <div class="text-[11px] text-slate-500 mt-1">${text}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        case 'investNews':
+            return `
+                <div class="space-y-2 mb-4">
+                    ${appData.investments.news.map(headline => `
+                        <div class="bg-white border border-slate-200 rounded-2xl p-3">
+                            <div class="font-semibold text-slate-800 leading-snug">${escapeHtml(headline)}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        case 'reports':
+            if (item.category === 'investments') {
+                return `
+                    <div class="space-y-2 mb-4">
+                        ${[
+                            ['Облигации для консервативного сценария', 'Подборка выпусков с умеренным риском'],
+                            ['Акции дивидендного профиля', 'Компании со стабильными выплатами']
+                        ].map(([title, note]) => `
+                            <div class="bg-white border border-slate-200 rounded-2xl p-3">
+                                <div class="font-bold text-slate-800">${title}</div>
+                                <div class="text-[11px] text-slate-500 mt-1">${note}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+            return `
+                <div class="grid grid-cols-2 gap-2 mb-4">
+                    <div class="bg-white border border-slate-200 rounded-2xl p-3">
+                        <div class="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Этот месяц</div>
+                        <div class="font-bold text-slate-800 mt-1">58 640 ₽</div>
+                    </div>
+                    <div class="bg-white border border-slate-200 rounded-2xl p-3">
+                        <div class="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Изменение</div>
+                        <div class="font-bold text-otpOrange mt-1">+8%</div>
+                    </div>
+                </div>
+            `;
+        case 'repeat':
+            return renderOperationsList(false, true);
+        case 'spendingCategories':
+            return `
+                <div class="space-y-2 mb-4">
+                    ${appData.spendingCategories.map(cat => {
+                        const percent = Math.min(100, Math.round((cat.amount / cat.limit) * 100));
+                        return `
+                            <div class="bg-white border border-slate-200 rounded-2xl p-3">
+                                <div class="flex items-center justify-between">
+                                    <div class="font-bold text-slate-800">${escapeHtml(cat.icon)} ${escapeHtml(cat.title)}</div>
+                                    <div class="text-sm font-semibold text-slate-800">${formatCurrency(cat.amount)}</div>
+                                </div>
+                                <div class="mt-2 w-full h-2 rounded-full bg-slate-100 overflow-hidden">
+                                    <div class="h-full bg-otpOrange" style="width:${percent}%"></div>
+                                </div>
+                                <div class="mt-2 text-[11px] text-slate-500">Лимит ${formatCurrency(cat.limit)}</div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        case 'limits':
+            return `
+                <div class="space-y-2 mb-4">
+                    ${appData.spendingCategories.slice(0, 4).map(cat => {
+                        const percent = Math.min(100, Math.round((cat.amount / cat.limit) * 100));
+                        return `
+                            <div class="bg-white border border-slate-200 rounded-2xl p-3">
+                                <div class="flex items-center justify-between">
+                                    <div class="font-bold text-slate-800">${escapeHtml(cat.title)}</div>
+                                    <div class="text-[11px] font-semibold ${percent > 80 ? 'text-otpOrange' : 'text-slate-600'}">${percent}% лимита</div>
+                                </div>
+                                <div class="mt-2 w-full h-2 rounded-full bg-slate-100 overflow-hidden">
+                                    <div class="h-full ${percent > 80 ? 'bg-otpOrange' : 'bg-slate-800'}" style="width:${percent}%"></div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        default:
+            return '';
+    }
+}
+function renderOperationsList(withDates = true, withRepeatAction = false) {
+    return `
+        <div class="space-y-2 mb-4">
+            ${appData.recentOperations.map(op => `
+                <div class="bg-white border border-slate-200 rounded-2xl p-3 flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-slate-100 flex items-center justify-center text-lg">${escapeHtml(op.icon)}</div>
+                    <div class="flex-1">
+                        <div class="font-bold text-slate-800 text-sm">${escapeHtml(op.title)}</div>
+                        <div class="text-[11px] text-slate-500 mt-1">${escapeHtml(op.category)}${withDates ? ' • ' + escapeHtml(op.dateLabel) : ''}</div>
+                    </div>
+                    <div class="text-right">
+                        <div class="font-bold text-sm ${op.amount >= 0 ? 'text-green-600' : 'text-slate-800'}">${formatSignedAmount(op.amount)}</div>
+                        ${withRepeatAction ? `<button class="mt-1 text-[11px] font-semibold text-otpOrange" onclick="showToast('Операция готова к повтору')">Повторить</button>` : ''}
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+    `;
+}
+
+/* =========================
+   Navigation logic
+========================= */
+function setTab(tabName, preserveCategory = false) {
+    closeSearch();
+    closeDetail();
+
+    state.tab = tabName;
+    if (!preserveCategory) closeCategory(true);
+
+    if (tabName === 'home') {
+        refs.home.classList.remove('opacity-0', 'pointer-events-none');
+        refs.home.classList.add('opacity-100', 'z-10');
+        refs.showcase.classList.remove('opacity-100', 'z-10');
+        refs.showcase.classList.add('opacity-0', 'pointer-events-none', 'z-0');
+    } else {
+        refs.showcase.classList.remove('opacity-0', 'pointer-events-none');
+        refs.showcase.classList.add('opacity-100', 'z-10');
+        refs.home.classList.remove('opacity-100', 'z-10');
+        refs.home.classList.add('opacity-0', 'pointer-events-none', 'z-0');
+    }
+    updateNav();
+}
+function updateNav() {
+    const homeActive = state.tab === 'home';
+    refs.navHome.classList.toggle('text-otpOrange', homeActive);
+    refs.navHome.classList.toggle('text-otpDarkBlue', !homeActive);
+    refs.navShowcase.classList.toggle('text-otpOrange', !homeActive);
+    refs.navShowcase.classList.toggle('text-otpDarkBlue', homeActive);
+}
+function quickHomeAction(type) {
+    setTab('showcase', true);
+    if (type === 'transfer') {
+        openCategory('payments', 'transfer');
+        return;
+    }
+    if (type === 'pay') {
+        openCategory('payments', 'pay');
+        return;
+    }
+    if (type === 'sbp') {
+        routeAction('transfer-sbp', { openDetail: true });
+        return;
+    }
+    if (type === 'history') {
+        routeAction('spend-history', { openDetail: true });
+    }
+}
+function routeAction(itemId, options = {}) {
+    const item = itemCatalog[itemId];
+    if (!item) return;
+    if (!item.category) {
+        openDetail(itemId);
+        return;
+    }
+    setTab('showcase', true);
+    openCategory(item.category, options.section || item.section || '');
+    clearTimeout(state.detailTimer);
+    if (options.openDetail !== false) {
+        state.detailTimer = setTimeout(() => openDetail(itemId), 320);
+    }
+}
+
+/* =========================
+   Init
+========================= */
+function setupSearchInput() {
+    refs.searchInput.addEventListener('input', (event) => {
+        state.searchQuery = event.target.value;
+        renderSearch();
+    });
+    refs.searchInput.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            addRecentQuery(state.searchQuery);
+            renderSearch();
+        }
+    });
+}
+function init() {
+    buildSearchIndex();
+    renderHome();
+    renderShowcase();
+    setupSearchInput();
+    setTab('home');
+}
+init();
 </script>
 </body>
 </html>
